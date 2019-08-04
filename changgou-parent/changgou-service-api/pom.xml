@@ -12,6 +12,7 @@
     <modules>
         <module>changgou-service-goods-api</module>
         <module>changgou-service-content-api</module>
+        <module>changgou-service-search-api</module>
     </modules>
     <artifactId>changgou-service-api</artifactId>
 
@@ -29,6 +30,12 @@
             <artifactId>persistence-api</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.3</version>
         </dependency>
     </dependencies>
 </project>
