@@ -21,4 +21,6 @@ public interface BrandService {
     PageInfo<Brand> findPage(int page, int size);
 
     PageInfo<Brand> findPage(Brand brand, int page, int size);
+
+    List<Brand> findByCategory(Integer categoryId);
 }

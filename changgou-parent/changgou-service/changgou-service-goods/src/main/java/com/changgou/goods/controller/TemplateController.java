@@ -66,4 +66,10 @@ public class TemplateController {
         List<Template> list = templateService.findAll();
         return new Result<Template>(true, StatusCode.OK, "查询成功", list);
     }
+
+    @GetMapping("/category/{id}")
+    public Result<Template> findByCategoryId(@PathVariable("id") Integer id) {
+        Template template = templateService.findByCategoryId(id);
+        return new Result<Template>(true, StatusCode.OK, "查询成功", template);
+    }
 }

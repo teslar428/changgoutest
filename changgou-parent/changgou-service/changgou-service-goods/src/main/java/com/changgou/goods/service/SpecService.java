@@ -21,4 +21,6 @@ public interface SpecService {
     Spec findById(Integer id);
 
     List<Spec> findAll();
+
+    List<Spec> findByCategoryId(Integer categoryId);
 }

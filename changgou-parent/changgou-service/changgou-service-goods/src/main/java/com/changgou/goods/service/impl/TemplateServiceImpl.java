@@ -1,6 +1,8 @@
 package com.changgou.goods.service.impl;
 
+import com.changgou.goods.dao.CategoryMapper;
 import com.changgou.goods.dao.TemplateMapper;
+import com.changgou.goods.pojo.Category;
 import com.changgou.goods.pojo.Template;
 import com.changgou.goods.service.TemplateService;
 import com.github.pagehelper.PageHelper;
@@ -16,6 +18,9 @@ import java.util.List;
 public class TemplateServiceImpl implements TemplateService {
     @Autowired
     private TemplateMapper templateMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     public Example createExample(Template template) {
         Example example = new Example(Template.class);
@@ -76,4 +81,10 @@ public class TemplateServiceImpl implements TemplateService {
     public List<Template> findAll() {
         return templateMapper.selectAll();
     }
+
+    public Template findByCategoryId(Integer id) {
+        Category category = categoryMapper.selectByPrimaryKey(id);
+        return templateMapper.selectByPrimaryKey(category.getTemplateId());
+    }
+
 }

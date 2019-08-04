@@ -65,4 +65,10 @@ public class SpecController {
         List<Spec> specList = specService.findAll();
         return new Result<Spec>(true, StatusCode.OK, "查询成功", specList);
     }
+
+    @GetMapping("/category/{id}")
+    public Result<List<Spec>> findByCategoryId(@PathVariable("id") Integer categoryId) {
+        List<Spec> specList = specService.findByCategoryId(categoryId);
+        return new Result<List<Spec>>(true, StatusCode.OK, "查询成功", specList);
+    }
 }

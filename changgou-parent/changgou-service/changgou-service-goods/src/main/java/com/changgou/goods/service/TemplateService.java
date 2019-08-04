@@ -22,4 +22,6 @@ public interface TemplateService {
     Template findById(Integer id);
 
     List<Template> findAll();
+
+    Template findByCategoryId(Integer id);
 }

@@ -1,7 +1,9 @@
 package com.changgou.goods.service.impl;
 
+import com.changgou.goods.dao.CategoryMapper;
 import com.changgou.goods.dao.ParaMapper;
 import com.changgou.goods.dao.TemplateMapper;
+import com.changgou.goods.pojo.Category;
 import com.changgou.goods.pojo.Para;
 import com.changgou.goods.pojo.Template;
 import com.changgou.goods.service.ParaService;
@@ -21,6 +23,9 @@ public class ParaServiceImpl implements ParaService {
 
     @Autowired
     private TemplateMapper templateMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     public Example createExample(Para para) {
         Example example = new Example(Para.class);
@@ -94,5 +99,12 @@ public class ParaServiceImpl implements ParaService {
 
     public List<Para> findAll() {
         return paraMapper.selectAll();
+    }
+
+    public List<Para> findByCategoryId(Integer id) {
+        Category category = categoryMapper.selectByPrimaryKey(id);
+        Para para = new Para();
+        para.setTemplateId(category.getTemplateId());
+        return paraMapper.select(para);
     }
 }

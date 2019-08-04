@@ -21,4 +21,6 @@ public interface ParaService {
     Para findById(Integer id);
 
     List<Para> findAll();
+
+    List<Para> findByCategoryId(Integer id);
 }

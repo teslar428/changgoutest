@@ -65,10 +65,16 @@ public class BrandController {
         return new Result<PageInfo>(true, StatusCode.OK, "查询成功", pageInfo);
     }
 
-    @PostMapping("/search/{page}/{size}" )
-    public Result<PageInfo> findPage(@RequestBody(required = false) Brand brand, @PathVariable("page")  int page, @PathVariable("size")  int size){
+    @PostMapping("/search/{page}/{size}")
+    public Result<PageInfo> findPage(@RequestBody(required = false) Brand brand, @PathVariable("page") int page, @PathVariable("size") int size) {
         //执行搜索
         PageInfo<Brand> pageInfo = brandService.findPage(brand, page, size);
-        return new Result<PageInfo>(true,StatusCode.OK,"查询成功",pageInfo);
+        return new Result<PageInfo>(true, StatusCode.OK, "查询成功", pageInfo);
+    }
+
+    @GetMapping("/category/{id}")
+    public Result<List<Brand>> findBrandByCategory(@PathVariable("id") Integer categoryId) {
+        List<Brand> brandList = brandService.findByCategory(categoryId);
+        return new Result<List<Brand>>(true, StatusCode.OK, "查询成功", brandList);
     }
 }

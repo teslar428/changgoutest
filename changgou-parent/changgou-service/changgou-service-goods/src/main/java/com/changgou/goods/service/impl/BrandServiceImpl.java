@@ -72,20 +72,24 @@ public class BrandServiceImpl implements BrandService {
         return example;
     }
 
-    public PageInfo<Brand> findPage(int page, int size){
+    public PageInfo<Brand> findPage(int page, int size) {
         //静态分页
-        PageHelper.startPage(page,size);
+        PageHelper.startPage(page, size);
         //分页查询
         return new PageInfo<Brand>(brandMapper.selectAll());
     }
 
-    public PageInfo<Brand> findPage(Brand brand, int page, int size){
+    public PageInfo<Brand> findPage(Brand brand, int page, int size) {
         //分页
-        PageHelper.startPage(page,size);
+        PageHelper.startPage(page, size);
         //搜索条件构建
         Example example = createExample(brand);
         //执行搜索
         return new PageInfo<Brand>(brandMapper.selectByExample(example));
+    }
+
+    public List<Brand> findByCategory(Integer categoryId) {
+        return brandMapper.findByCategory(categoryId);
     }
 
 }

@@ -1,7 +1,9 @@
 package com.changgou.goods.service.impl;
 
+import com.changgou.goods.dao.CategoryMapper;
 import com.changgou.goods.dao.SpecMapper;
 import com.changgou.goods.dao.TemplateMapper;
+import com.changgou.goods.pojo.Category;
 import com.changgou.goods.pojo.Spec;
 import com.changgou.goods.pojo.Template;
 import com.changgou.goods.service.SpecService;
@@ -21,6 +23,9 @@ public class SpecServiceImpl implements SpecService {
 
     @Autowired
     private TemplateMapper templateMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     public Example createExample(Spec spec) {
         Example example = new Example(Spec.class);
@@ -94,5 +99,12 @@ public class SpecServiceImpl implements SpecService {
 
     public List<Spec> findAll() {
         return specMapper.selectAll();
+    }
+
+    public List<Spec> findByCategoryId(Integer categoryId) {
+        Category category = categoryMapper.selectByPrimaryKey(categoryId);
+        Spec spec = new Spec();
+        spec.setTemplateId(category.getTemplateId());
+        return specMapper.select(spec);
     }
 }

@@ -61,9 +61,16 @@ public class CategoryController {
     }
 
     @GetMapping
-    public Result<Category> findAll(){
+    public Result<Category> findAll() {
         List<Category> list = categoryService.findAll();
-        return new Result<Category>(true,StatusCode.OK,"查询成功",list);
+        return new Result<Category>(true, StatusCode.OK, "查询成功", list);
     }
+
+    @GetMapping("/list/{pid}")
+    public Result<List<Category>> findByParentId(@PathVariable("pid") Integer pid) {
+        List<Category> categories = categoryService.findByParentId(pid);
+        return new Result<List<Category>>(true, StatusCode.OK, "查询成功", categories);
+    }
+
 
 }
