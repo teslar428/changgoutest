@@ -27,4 +27,10 @@ public class SkuEsController {
     public Map search(@RequestBody(required = false) Map searchMap){
         return  skuEsService.search(searchMap);
     }
+
+    @DeleteMapping
+    public Result deleteAll(){
+        skuEsService.deleteAll();
+        return new Result(true,StatusCode.OK,"删除所有索引成功");
+    }
 }
