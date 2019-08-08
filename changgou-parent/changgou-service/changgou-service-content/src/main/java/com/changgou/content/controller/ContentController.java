@@ -45,7 +45,7 @@ public class ContentController {
 
     // 根据ID删除数据
     @DeleteMapping(value = "/{id}")
-    public Result delete(@PathVariable Long id) {
+    public Result delete(@PathVariable("id") Long id) {
         //调用ContentService实现根据主键删除
         contentService.delete(id);
         return new Result(true, StatusCode.OK, "删除成功");
@@ -53,7 +53,7 @@ public class ContentController {
 
     // 修改Content数据
     @PutMapping(value = "/{id}")
-    public Result update(@RequestBody Content content, @PathVariable Long id) {
+    public Result update(@RequestBody Content content, @PathVariable("id") Long id) {
         //设置主键值
         content.setId(id);
         //调用ContentService实现修改Content
@@ -71,7 +71,7 @@ public class ContentController {
 
     // 根据ID查询Content数据
     @GetMapping("/{id}")
-    public Result<Content> findById(@PathVariable Long id) {
+    public Result<Content> findById(@PathVariable("id") Long id) {
         //调用ContentService实现根据主键查询Content
         Content content = contentService.findById(id);
         return new Result<Content>(true, StatusCode.OK, "查询成功", content);

@@ -14,9 +14,7 @@ import java.util.List;
 @RequestMapping(value = "/content")
 public interface ContentFeign {
 
-    /***
-     * 根据分类ID查询所有广告
-     */
+    // 根据分类ID查询所有广告
     @GetMapping(value = "/list/category/{id}")
     Result<List<Content>> findByCategory(@PathVariable("id") Long id);
 }

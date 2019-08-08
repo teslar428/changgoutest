@@ -13,23 +13,23 @@ import java.util.List;
 public interface SkuFeign {
 
     // Sku分页条件搜索实现
-    @PostMapping(value = "/search/{page}/{size}")
+    @PostMapping("/search/{page}/{size}")
     Result<PageInfo> findPage(@RequestBody(required = false) Sku sku, @PathVariable("page") int page, @PathVariable("size") int size);
 
     // Sku分页搜索实现
-    @GetMapping(value = "/search/{page}/{size}")
+    @GetMapping("/search/{page}/{size}")
     Result<PageInfo> findPage(@PathVariable("page") int page, @PathVariable("size") int size);
 
     // 多条件搜索品牌数据
-    @PostMapping(value = "/search")
+    @PostMapping("/search")
     Result<List<Sku>> findList(@RequestBody(required = false) Sku sku);
 
     // 根据ID删除品牌数据
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
     Result delete(@PathVariable("id") Long id);
 
     // 修改Sku数据
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
     Result update(@RequestBody Sku sku, @PathVariable("id") Long id);
 
     // 新增Sku数据
@@ -47,4 +47,5 @@ public interface SkuFeign {
     //根据审核状态查询Sku
     @GetMapping("/status/{status}")
     Result findByStatus(@PathVariable("status") String status);
+
 }

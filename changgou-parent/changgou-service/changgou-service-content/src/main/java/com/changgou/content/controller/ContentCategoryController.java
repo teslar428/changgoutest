@@ -53,7 +53,7 @@ public class ContentCategoryController {
 
     // 修改ContentCategory数据
     @PutMapping(value="/{id}")
-    public Result update(@RequestBody  ContentCategory contentCategory,@PathVariable Long id){
+    public Result update(@RequestBody  ContentCategory contentCategory,@PathVariable("id") Long id){
         //设置主键值
         contentCategory.setId(id);
         //调用ContentCategoryService实现修改ContentCategory
@@ -71,7 +71,7 @@ public class ContentCategoryController {
 
     // 根据ID查询ContentCategory数据
     @GetMapping("/{id}")
-    public Result<ContentCategory> findById(@PathVariable Long id){
+    public Result<ContentCategory> findById(@PathVariable("id") Long id){
         //调用ContentCategoryService实现根据主键查询ContentCategory
         ContentCategory contentCategory = contentCategoryService.findById(id);
         return new Result<ContentCategory>(true,StatusCode.OK,"查询成功",contentCategory);

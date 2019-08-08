@@ -51,7 +51,7 @@ public class SkuEsServiceImpl implements SkuEsService {
     public void importSku() {
         //调用changgou-service-goods微服务
         Result<List<Sku>> skuListResult = skuFeign.findByStatus("1");
-        //将数据转成search.Sku
+        //将List<Sku>转成List<SkuInfo>
         List<SkuInfo> skuInfos = JSON.parseArray(JSON.toJSONString(skuListResult.getData()), SkuInfo.class);
         for (SkuInfo skuInfo : skuInfos) {
             Map<String, Object> specMap = JSON.parseObject(skuInfo.getSpec(), Map.class);
@@ -86,6 +86,10 @@ public class SkuEsServiceImpl implements SkuEsService {
         //5.查询规格数据
         Map<String, Set<String>> specMap = searchSpec(builder);
         resultMap.put("specList", specMap);
+
+        //分页数据保存
+        resultMap.put("pageNum", builder.build().getPageable().getPageNumber() + 1);
+        resultMap.put("pageSize", builder.build().getPageable().getPageSize());
         return resultMap;
     }
 
@@ -118,7 +122,8 @@ public class SkuEsServiceImpl implements SkuEsService {
             for (String key : searchMap.keySet()) {
                 //如果是规格参数
                 if (key.startsWith("spec_")) {
-                    queryBuilder.must(QueryBuilders.matchQuery("specMap." + key.substring(5) + ".keyword", searchMap.get(key)));
+                    String value = searchMap.get(key).replace("\\", "");
+                    queryBuilder.must(QueryBuilders.matchQuery("specMap." + key.substring(5) + ".keyword", value));
                 }
             }
 
@@ -126,6 +131,9 @@ public class SkuEsServiceImpl implements SkuEsService {
             //传过来的价格格式:price="500-1000"
             String price = searchMap.get("price");
             if (!StringUtils.isEmpty(price)) {
+                //去掉元和以上
+                price = price.replace("元", "").replace("以上", "");
+                //根据-分割
                 String[] array = price.split("-");
                 //x<price
                 queryBuilder.must(QueryBuilders.rangeQuery("price").gt(array[0]));
@@ -158,26 +166,28 @@ public class SkuEsServiceImpl implements SkuEsService {
     //  如果不发生异常,则直接转换成数字
     //  如果发生异常,则默认从第一页查询
     private Integer pageConvert(Map<String, String> searchMap) {
+        Integer defaultPage = 1;
         try {
             return Integer.parseInt(searchMap.get("pageNum"));
         } catch (Exception e) {
 //            e.printStackTrace();
-            System.out.println("未传入当前页,使用默认值......");
+            System.out.println("未传入当前页,使用默认值......" + defaultPage);
         }
-        return 1;
+        return defaultPage;
     }
 
     //获取每页显示数量
     //  如果不发生异常,则直接转换成数字
-    //  如果发生异常,则默认显示3条数据
+    //  如果发生异常,则使用默认数据
     private Integer sizeConvert(Map<String, String> searchMap) {
+        Integer defaultSize = 10;
         try {
-            return Integer.parseInt(searchMap.get("sizeNum"));
+            return Integer.parseInt(searchMap.get("pageSize"));
         } catch (Exception e) {
 //            e.printStackTrace();
-            System.out.println("未传入每页显示数量,使用默认值......");
+            System.out.println("未传入每页显示数量,使用默认值......" + defaultSize);
         }
-        return 3;
+        return defaultSize;
     }
 
     //数据搜索

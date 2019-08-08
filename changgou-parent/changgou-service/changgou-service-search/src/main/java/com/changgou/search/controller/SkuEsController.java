@@ -23,14 +23,14 @@ public class SkuEsController {
         return new Result(true, StatusCode.OK, "导入数据到索引库中成功！");
     }
 
-    @PostMapping
-    public Map search(@RequestBody(required = false) Map searchMap){
-        return  skuEsService.search(searchMap);
+    @GetMapping
+    public Map search(@RequestParam(required = false) Map searchMap) {
+        return skuEsService.search(searchMap);
     }
 
     @DeleteMapping
-    public Result deleteAll(){
+    public Result deleteAll() {
         skuEsService.deleteAll();
-        return new Result(true,StatusCode.OK,"删除所有索引成功");
+        return new Result(true, StatusCode.OK, "删除所有索引成功");
     }
 }
