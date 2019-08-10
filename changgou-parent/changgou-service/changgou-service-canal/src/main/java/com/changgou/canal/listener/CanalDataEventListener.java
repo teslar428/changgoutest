@@ -39,6 +39,7 @@ public class CanalDataEventListener {
 //        for (CanalEntry.Column column : rowData.getAfterColumnsList()) {
 //            System.out.println("增加数据监听: " + column.getName() + " ::   " + column.getValue());
 //        }
+        System.out.println("监听到数据增加......");
     }
 
     // 修改数据监听
@@ -47,6 +48,8 @@ public class CanalDataEventListener {
 //        for (CanalEntry.Column column : rowData.getAfterColumnsList()) {
 //            System.out.println("修改数据监听: " + column.getName() + " ::   " + column.getValue());
 //        }
+        System.out.println("监听到数据修改......");
+
     }
 
     // 删除数据监听
@@ -55,6 +58,8 @@ public class CanalDataEventListener {
 //        for (CanalEntry.Column column : rowData.getBeforeColumnsList()) {
 //            System.out.println("删除数据监听:" + column.getName() + " ::   " + column.getValue());
 //        }
+        System.out.println("监听到数据删除......");
+
     }
 
     // 获取指定列的值
@@ -99,7 +104,7 @@ public class CanalDataEventListener {
         int number = eventType.getNumber();
         //操作的数据
         String id = getColumn(rowData, "id");
-        System.out.println("ID:"+id);
+        System.out.println("ID:" + id);
         //封装Message
         Message message = new Message(number, id, TopicQueue.TOPIC_QUEUE_SPU, TopicQueue.TOPIC_EXCHANGE_SPU);
         topicMessageSender.sendMessage(message);

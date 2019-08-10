@@ -9,6 +9,7 @@ import com.changgou.user.pojo.User;
 import com.changgou.user.service.UserService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -29,7 +30,7 @@ public class UserController {
     private UserService userService;
 
     // User分页条件搜索实现
-    @PostMapping(value = "/search/{page}/{size}")
+    @PostMapping("/search/{page}/{size}")
     public Result<PageInfo> findPage(@RequestBody(required = false) User user, @PathVariable("page") int page, @PathVariable("size") int size) {
         //调用UserService实现分页条件查询User
         PageInfo<User> pageInfo = userService.findPage(user, page, size);
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     // User分页搜索实现
-    @GetMapping(value = "/search/{page}/{size}")
+    @GetMapping("/search/{page}/{size}")
     public Result<PageInfo> findPage(@PathVariable("page") int page, @PathVariable("size") int size) {
         //调用UserService实现分页查询User
         PageInfo<User> pageInfo = userService.findPage(page, size);
@@ -45,7 +46,7 @@ public class UserController {
     }
 
     // 多条件搜索数据
-    @PostMapping(value = "/search")
+    @PostMapping("/search")
     public Result<List<User>> findList(@RequestBody(required = false) User user) {
         //调用UserService实现条件查询User
         List<User> list = userService.findList(user);
@@ -53,7 +54,8 @@ public class UserController {
     }
 
     // 根据ID删除数据
-    @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('admin')")
+    @DeleteMapping("/{id}")
     public Result delete(@PathVariable("id") String id) {
         //调用UserService实现根据主键删除
         userService.delete(id);
@@ -61,7 +63,7 @@ public class UserController {
     }
 
     // 修改User数据
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
     public Result update(@RequestBody User user, @PathVariable("id") String id) {
         //设置主键值
         user.setUsername(id);
@@ -79,7 +81,7 @@ public class UserController {
     }
 
     // 根据ID查询User数据
-    @GetMapping("/{id}")
+    @GetMapping({"/{id}","/load/{id}"})
     public Result<User> findById(@PathVariable("id") String id) {
         //调用UserService实现根据主键查询User
         User user = userService.findById(id);
@@ -90,7 +92,7 @@ public class UserController {
     @GetMapping
     public Result<List<User>> findAll(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
-        System.out.println("令牌信息:"+authorization);
+        System.out.println("令牌信息:" + authorization);
 
         //调用UserService实现查询所有User
         List<User> list = userService.findAll();

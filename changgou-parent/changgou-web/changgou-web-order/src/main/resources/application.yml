@@ -1,0 +1,32 @@
+server:
+  port: 18091
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:7001/eureka
+  instance:
+    prefer-ip-address: true
+feign:
+  hystrix:
+    enabled: true
+spring:
+  thymeleaf:
+    cache: false
+  application:
+    name: order-web
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    static-path-pattern: /static/**
+#超时配置
+ribbon:
+  ReadTimeout: 300000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+          strategy: SEMAPHORE

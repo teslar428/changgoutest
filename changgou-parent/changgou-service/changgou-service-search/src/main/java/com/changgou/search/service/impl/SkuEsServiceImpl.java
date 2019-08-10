@@ -146,7 +146,7 @@ public class SkuEsServiceImpl implements SkuEsService {
             //排序
             String sortRule = searchMap.get("sortRule");//排序规则: ASC DESC
             String sortField = searchMap.get("sortField");//排序字段: price
-            if (!StringUtils.isEmpty(sortField)) {
+            if (!StringUtils.isEmpty(sortField) && !StringUtils.isEmpty(sortRule)) {
                 nativeSearchQueryBuilder.withSort(SortBuilders.fieldSort(sortField).order(SortOrder.valueOf(sortRule)));
             }
         }
@@ -195,10 +195,10 @@ public class SkuEsServiceImpl implements SkuEsService {
         Map resultMap = new HashMap();//返回结果
         //高亮域配置
         HighlightBuilder.Field field = new HighlightBuilder.
-                Field("name").                      //指定的高亮域
-                preTags("<span style=\"color:red\">").   //前缀
-                postTags("</span>").                      //后缀
-                fragmentSize(100);
+                Field("name").                   //指定的高亮域
+                preTags("<span style=\"color:red\">").  //前缀
+                postTags("</span>").                    //后缀
+                fragmentSize(100);                      //高亮数据的长度
 
         //添加高亮域
         builder.withHighlightFields(field);
@@ -213,10 +213,10 @@ public class SkuEsServiceImpl implements SkuEsService {
 
                 //循环所有数据
                 for (SearchHit hit : response.getHits()) {
-                    //获取非高亮数据           例如：小白真美丽      {"name":"张三","age":27}
+                    //获取未高亮数据
                     SkuInfo skuInfo = JSON.parseObject(hit.getSourceAsString(), SkuInfo.class);
 
-                    //获取高亮数据            例如：小白真 <span style="color:red;">美丽</span>
+                    //获取高亮数据
                     HighlightField titleHighlight = hit.getHighlightFields().get("name");      //获取标题的高亮数据
 
                     if (titleHighlight != null) {
@@ -224,10 +224,9 @@ public class SkuEsServiceImpl implements SkuEsService {
                         StringBuffer buffer = new StringBuffer();
                         //循环获取高亮数据
                         for (Text text : titleHighlight.getFragments()) {
-                            //text.toString():   小白真<span style="color:red;">美丽</span>啊
                             buffer.append(text.toString());
                         }
-                        //将非高亮数据替换成高亮数据    小白真美丽-->小白真 <span style="color:red;">美丽</span>
+                        //将非高亮数据替换成高亮数据
                         skuInfo.setName(buffer.toString());
                     }
 
@@ -280,9 +279,14 @@ public class SkuEsServiceImpl implements SkuEsService {
         Aggregations aggregations = result.getAggregations();
         //获取分组结果
         StringTerms stringTerms = aggregations.get(terms);
+
         //返回品牌名称
-        List<String> sku_brandList = stringTerms.getBuckets().stream().map(b -> b.getKeyAsString()).collect(Collectors.toList());
-        return sku_brandList;
+        List<String> brandList = new ArrayList<String>();
+        for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
+            String brandName = bucket.getKeyAsString();
+            brandList.add(brandName);
+        }
+        return brandList;
     }
 
     //查询规格列表
@@ -294,12 +298,18 @@ public class SkuEsServiceImpl implements SkuEsService {
         Aggregations aggregations = result.getAggregations();
         StringTerms stringTerms = aggregations.get(terms);
 
-        //返回规格数据名称
-        List<String> sku_specList = stringTerms.getBuckets().stream().map(b -> b.getKeyAsString()).collect(Collectors.toList());
+        //循环所有规格分组数据，并且将它存入到List<String>集合中
+        List<String> specList = new ArrayList<String>();
 
-        //将规格转成Map
-        Map<String, Set<String>> specMap = specPutAll(sku_specList);
-        return specMap;
+        for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
+            //循环取数据
+            String spec = bucket.getKeyAsString(); //规格值
+            specList.add(spec);
+        }
+
+        //过滤汇总规格数据，组装的结果Map<String,Set<String>
+        Map<String, Set<String>> resultSpecMap = specPutAll(specList);
+        return resultSpecMap;
     }
 
     //将所有规格数据转入到Map中
@@ -309,7 +319,7 @@ public class SkuEsServiceImpl implements SkuEsService {
 
         //将集合数据存入到Map中
         for (String specString : specList) {
-            //将Map数据转成Map
+            //将JSON数据转成Map
             Map<String, String> map = JSON.parseObject(specString, Map.class);
 
             //循环转换后的Map
@@ -333,5 +343,64 @@ public class SkuEsServiceImpl implements SkuEsService {
     @Override
     public void deleteAll() {
         skuEsMapper.deleteAll();
+    }
+
+    /****
+     * 分类条件搜索
+     * @param builder
+     * @return
+     */
+    public Map<String,Object> groupList(NativeSearchQueryBuilder builder){
+        /***
+         * 品牌|分类|规格分组查询
+         * AggregationBuilder：有一个构件工具对象AggregationBuilders
+         * AggregationBuilders.terms("分组域取个别名").field("要分组的域")
+         * 取别名作用：根据别名获取分组数据
+         */
+        builder.addAggregation(AggregationBuilders.terms("skuCategory").field("categoryName").size(100));   //添加聚合操作(分类)
+        builder.addAggregation(AggregationBuilders.terms("skuBrand").field("brandName").size(100));         //添加聚合操作(品牌)
+        builder.addAggregation(AggregationBuilders.terms("skuSpec").field("spec.keyword").size(100000));    //添加规格聚合操作
+
+        //执行搜索->分组搜索
+        AggregatedPage<SkuInfo> cagegoryPage = esTemplate.queryForPage(builder.build(), SkuInfo.class);
+        Aggregations aggregations = cagegoryPage.getAggregations();//获取聚合搜索的结果集
+
+        //获取分类分组结果集
+        List<String> categoryList = getGroupList(aggregations,"skuCategory");
+
+        //获取分类分组结果集
+        List<String> brandList = getGroupList(aggregations,"skuBrand");
+
+        //获取规格分组结果集
+        List<String> specList = getGroupList(aggregations,"skuSpec");
+        //处理规格数据
+        Map<String, Set<String>> resultSpecMap = specPutAll(specList);
+
+        //Map存储所有结果集数据
+        Map<String,Object> resultMap = new HashMap<String,Object>();
+        resultMap.put("categoryList",categoryList);
+        resultMap.put("brandList",brandList);
+        resultMap.put("specList",resultSpecMap);
+        return resultMap;
+    }
+
+    /***
+     * 获取分组结果查询
+     * @param aggregations
+     * @param groupName
+     * @return
+     */
+    public List<String> getGroupList(Aggregations aggregations,String groupName){
+        //获取指定分组的数据  根据别名获取,List<String>
+        StringTerms stringTerms = aggregations.get(groupName);
+        //循环所有分类分组数据，并且将它存入到List<String>集合中
+        List<String> list = new ArrayList<String>();
+
+        for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
+            //循环取数据
+            String name = bucket.getKeyAsString(); //结果数据
+            list.add(name);
+        }
+        return list;
     }
 }

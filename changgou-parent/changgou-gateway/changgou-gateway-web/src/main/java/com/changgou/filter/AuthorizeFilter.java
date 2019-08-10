@@ -25,7 +25,8 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         ServerHttpResponse response = exchange.getResponse();
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
-        if (path.startsWith("/api/user/login") || path.startsWith("/api/brand/search/")) {
+        if (path.startsWith("/api/user/login") || path.startsWith("/api/brand/search/") || !URLFilter.hasAuthorize(path)) {
+            //放行
             Mono<Void> filter = chain.filter(exchange);
             return filter;
         }
@@ -50,8 +51,9 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         }
         //解析令牌数据
         try {
-            Claims claims = JwtUtil.parseJWT(token);
-            request.mutate().header(AUTHORIZE_TOKEN, claims.toString());
+//            Claims claims = JwtUtil.parseJWT(token);
+//            request.mutate().header(AUTHORIZE_TOKEN, claims.toString());
+            request.mutate().header(AUTHORIZE_TOKEN, "Bearer" + token);
         } catch (Exception e) {
             e.printStackTrace();
             //文档解析失败,响应401错误

@@ -11,6 +11,7 @@ spring:
                 - PUT
                 - DELETE
       routes:
+            #商品微服务
             - id: changgou_goods_route
               uri: lb://goods
               predicates:
@@ -27,6 +28,20 @@ spring:
               uri: lb://user
               predicates:
               - Path=/api/user/**,/api/address/**,/api/areas/**,/api/cities/**,/api/provinces/**
+              filters:
+              - StripPrefix=1
+            #订单微服务
+            - id: changgou_order_route
+              uri: lb://order
+              predicates:
+              - Path=/api/cart/**,/api/categoryReport/**,/api/orderConfig/**,/api/order/**,/api/orderItem/**,/api/orderLog/**,/api/preferential/**,/api/returnCause/**,/api/returnOrder/**,/api/returnOrderItem/**
+              filters:
+              - StripPrefix=1
+            #购物车订单渲染微服务
+            - id: changgou_order_web_route
+              uri: lb://order-web
+              predicates:
+              - Path=/api/wcart/**
               filters:
               - StripPrefix=1
 

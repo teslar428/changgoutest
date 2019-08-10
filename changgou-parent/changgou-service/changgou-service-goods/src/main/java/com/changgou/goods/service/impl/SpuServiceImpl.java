@@ -339,7 +339,7 @@ public class SpuServiceImpl implements SpuService {
 
     //放入回收站
     @Override
-    @Transactional //TODO 为什么只有这里加上事务控制
+    //@Transactional //TODO 为什么只有这里加上事务控制
     public void logicDelete(Long spuId) {
         Spu spu = spuMapper.selectByPrimaryKey(spuId);
         //检查是否下架
