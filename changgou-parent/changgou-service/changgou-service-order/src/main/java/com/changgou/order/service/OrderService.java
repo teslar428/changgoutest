@@ -17,7 +17,7 @@ public interface OrderService {
 
     void update(Order order);
 
-    void add(Order order);
+    int add(Order order);
 
     Order findById(String id);
 

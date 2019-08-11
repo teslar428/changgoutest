@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
     <title>我的购物车</title>
-    <link rel="icon" href="../static/img/favicon.ico">
+    <link rel="icon" th:href="@{${staticLink}+'/img/favicon.ico'}">
 
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <link rel="stylesheet" type="text/css" href="../static/css/all.css"/>
-    <link rel="stylesheet" type="text/css" href="../static/css/pages-cart.css"/>
-    <script src="../static/js/axios-0.18.0.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{${staticLink}+'/css/all.css'}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{${staticLink}+'/css/pages-cart.css'}"/>
+    <script th:src="@{${staticLink}+'/js/axios-0.18.0.js'}"></script>
 </head>
 
 <body>
@@ -70,7 +70,8 @@
 									</span>
                             </li>
                             <li class="f-item">
-                                <span>网站导航</li>
+                                <span>网站导航</span>
+                            </li>
                         </ul>
                     </div>
 
@@ -134,9 +135,8 @@
                             <li class="yui3-u-6-24">
                                 <div class="good-item">
                                     <div class="item-img">
-                                        <img :src="item.image"/>
+                                        <img :src="item.image" style="max-height: 80px"/>
                                     </div>
-                                    <!--<div class="item-msg">{{item.intro}}</div>-->
                                 </div>
                             </li>
                             <li class="yui3-u-5-24">
@@ -147,7 +147,8 @@
                             </li>
                             <li class="yui3-u-1-8">
                                 <a href="javascript:void(0)" class="increment mins" @click="add(item.num-1,item.skuId)">-</a>
-                                <input autocomplete="off" type="text" value="1" minnum="1" class="itxt" v-model="item.num" @blur="add(item.num,item.skuId)"/>
+                                <input autocomplete="off" type="text" value="1" minnum="1" class="itxt"
+                                       v-model="item.num" @blur="add(item.num,item.skuId)"/>
                                 <a href="javascript:void(0)" class="increment plus" @click="add(item.num+1,item.skuId)">+</a>
                             </li>
                             <li class="yui3-u-1-8">
@@ -166,7 +167,7 @@
         </div>
         <div class="cart-tool">
             <div class="select-all">
-                <input class="chooseAll" type="checkbox" name="" id="" value=""/>
+                <input class="chooseAll" type="checkbox"/>
                 <span>全选</span>
             </div>
             <div class="option">
@@ -189,7 +190,7 @@
 						</span>
                 </div>
                 <div class="sumbtn">
-                    <a class="sum-btn" href="getOrderInfo.html" target="_blank">结算</a>
+                    <a class="sum-btn" href="/api/worder/ready/order" target="_blank">结算</a>
                 </div>
             </div>
         </div>
@@ -211,7 +212,7 @@
                             <div class="active item">
                                 <ul>
                                     <li>
-                                        <img src="../static/img/like1.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like1.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -226,7 +227,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <img src="../static/img/like2.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like2.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -241,7 +242,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <img src="../static/img/like3.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like3.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -256,7 +257,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <img src="../static/img/like4.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like4.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -275,7 +276,7 @@
                             <div class="item">
                                 <ul>
                                     <li>
-                                        <img src="../static/img/like1.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like1.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -290,7 +291,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <img src="../static/img/like2.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like2.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -305,7 +306,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <img src="../static/img/like3.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like3.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -320,7 +321,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <img src="../static/img/like4.png"/>
+                                        <img th:src="@{${staticLink}+'/img/like4.png'}"/>
                                         <div class="intro">
                                             <i>Apple苹果iPhone 6s (A1699)</i>
                                         </div>
@@ -457,7 +458,7 @@
                     </div>
                     <div class="yui3-u-1-6">
                         <h4>帮助中心</h4>
-                        <img src="../static/img/wx_cz.jpg">
+                        <img th:src="@{${staticLink}+'/img/wx_cz.jpg'}">
                     </div>
                 </div>
             </div>
@@ -499,7 +500,7 @@
     </div>
 </div>
 <!--页面底部END-->
-<script type="text/javascript" src="../static/js/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" th:src="@{${staticLink}+'/js/plugins/jquery/jquery.min.js'}"></script>
 <!-- 引入组件库 -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.8/dist/vue.js"></script>
 <script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
@@ -514,15 +515,15 @@
 <script th:inline="javascript">
     var app = new Vue({
         el: '#app',
-        data:{
-            items:[[${items}]]
+        data: {
+            items: [[${items}]]
         },
-        methods:{
-            add:function (num,id) {
-                axios.get("/wcart/json/add?num="+num+"&id="+id).then((res)=>{
-                    if (res.data.flag){
-                        app.items=res.data.data;
-                    }else {
+        methods: {
+            add: function (num, id) {
+                axios.get("/api/wcart/json/add?num=" + num + "&id=" + id).then((res) => {
+                    if (res.data.flag) {
+                        app.items = res.data.data;
+                    } else {
                         alert(res.data.data);
                     }
                 }).catch();
@@ -530,32 +531,6 @@
         }
     });
 </script>
-
-
-
-<!--<script>-->
-    <!--var app = new Vue({-->
-        <!--el: '#app',-->
-        <!--data() {-->
-            <!--return {-->
-                <!--shopcarlist: [{-->
-                    <!--intro: '米家（MIJIA） 小米小白智能摄像机增强版 1080p高清360度全景拍摄AI增强',-->
-                    <!--property: '语音升级款',-->
-                    <!--price: '399.00'-->
-                <!--}, {-->
-                    <!--intro: '米家（MIJIA） 小米小白智能摄像机增强版 1080p高清360度全景拍摄AI增强',-->
-                    <!--property: '语音升级款',-->
-                    <!--price: '399.00'-->
-                <!--}, {-->
-                    <!--intro: '米家（MIJIA） 小米小白智能摄像机增强版 1080p高清360度全景拍摄AI增强',-->
-                    <!--property: '语音升级款',-->
-                    <!--price: '399.00'-->
-                <!--}]-->
-            <!--}-->
-        <!--}-->
-    <!--})-->
-<!--</script>-->
-
 </body>
 
 </html>

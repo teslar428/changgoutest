@@ -20,9 +20,9 @@ public class AddressServiceImpl implements AddressService {
 
     // Address条件+分页查询
     @Override
-    public PageInfo<Address> findPage(Address address, int page, int size){
+    public PageInfo<Address> findPage(Address address, int page, int size) {
         //分页
-        PageHelper.startPage(page,size);
+        PageHelper.startPage(page, size);
         //搜索条件构建
         Example example = createExample(address);
         //执行搜索
@@ -31,16 +31,16 @@ public class AddressServiceImpl implements AddressService {
 
     // Address分页查询
     @Override
-    public PageInfo<Address> findPage(int page, int size){
+    public PageInfo<Address> findPage(int page, int size) {
         //静态分页
-        PageHelper.startPage(page,size);
+        PageHelper.startPage(page, size);
         //分页查询
         return new PageInfo<Address>(addressMapper.selectAll());
     }
 
     // Address条件查询
     @Override
-    public List<Address> findList(Address address){
+    public List<Address> findList(Address address) {
         //构建查询条件
         Example example = createExample(address);
         //根据构建的条件查询数据
@@ -48,49 +48,49 @@ public class AddressServiceImpl implements AddressService {
     }
 
     // Address构建查询对象
-    public Example createExample(Address address){
-        Example example=new Example(Address.class);
+    public Example createExample(Address address) {
+        Example example = new Example(Address.class);
         Example.Criteria criteria = example.createCriteria();
-        if(address!=null){
+        if (address != null) {
             // 
-            if(!StringUtils.isEmpty(address.getId())){
-                    criteria.andEqualTo("id",address.getId());
+            if (!StringUtils.isEmpty(address.getId())) {
+                criteria.andEqualTo("id", address.getId());
             }
             // 用户名
-            if(!StringUtils.isEmpty(address.getUsername())){
-                    criteria.andLike("username","%"+address.getUsername()+"%");
+            if (!StringUtils.isEmpty(address.getUsername())) {
+                criteria.andLike("username", "%" + address.getUsername() + "%");
             }
             // 省
-            if(!StringUtils.isEmpty(address.getProvinceid())){
-                    criteria.andEqualTo("provinceid",address.getProvinceid());
+            if (!StringUtils.isEmpty(address.getProvinceid())) {
+                criteria.andEqualTo("provinceid", address.getProvinceid());
             }
             // 市
-            if(!StringUtils.isEmpty(address.getCityid())){
-                    criteria.andEqualTo("cityid",address.getCityid());
+            if (!StringUtils.isEmpty(address.getCityid())) {
+                criteria.andEqualTo("cityid", address.getCityid());
             }
             // 县/区
-            if(!StringUtils.isEmpty(address.getAreaid())){
-                    criteria.andEqualTo("areaid",address.getAreaid());
+            if (!StringUtils.isEmpty(address.getAreaid())) {
+                criteria.andEqualTo("areaid", address.getAreaid());
             }
             // 电话
-            if(!StringUtils.isEmpty(address.getPhone())){
-                    criteria.andEqualTo("phone",address.getPhone());
+            if (!StringUtils.isEmpty(address.getPhone())) {
+                criteria.andEqualTo("phone", address.getPhone());
             }
             // 详细地址
-            if(!StringUtils.isEmpty(address.getAddress())){
-                    criteria.andEqualTo("address",address.getAddress());
+            if (!StringUtils.isEmpty(address.getAddress())) {
+                criteria.andEqualTo("address", address.getAddress());
             }
             // 联系人
-            if(!StringUtils.isEmpty(address.getContact())){
-                    criteria.andEqualTo("contact",address.getContact());
+            if (!StringUtils.isEmpty(address.getContact())) {
+                criteria.andEqualTo("contact", address.getContact());
             }
             // 是否是默认 1默认 0否
-            if(!StringUtils.isEmpty(address.getIsDefault())){
-                    criteria.andEqualTo("isDefault",address.getIsDefault());
+            if (!StringUtils.isEmpty(address.getIsDefault())) {
+                criteria.andEqualTo("isDefault", address.getIsDefault());
             }
             // 别名
-            if(!StringUtils.isEmpty(address.getAlias())){
-                    criteria.andEqualTo("alias",address.getAlias());
+            if (!StringUtils.isEmpty(address.getAlias())) {
+                criteria.andEqualTo("alias", address.getAlias());
             }
         }
         return example;
@@ -98,31 +98,39 @@ public class AddressServiceImpl implements AddressService {
 
     // 删除
     @Override
-    public void delete(Integer id){
+    public void delete(Integer id) {
         addressMapper.deleteByPrimaryKey(id);
     }
 
     // 修改Address
     @Override
-    public void update(Address address){
+    public void update(Address address) {
         addressMapper.updateByPrimaryKeySelective(address);
     }
 
     // 增加Address
     @Override
-    public void add(Address address){
+    public void add(Address address) {
         addressMapper.insertSelective(address);
     }
 
     // 根据ID查询Address
     @Override
-    public Address findById(Integer id){
-        return  addressMapper.selectByPrimaryKey(id);
+    public Address findById(Integer id) {
+        return addressMapper.selectByPrimaryKey(id);
     }
 
     // 查询Address全部数据
     @Override
     public List<Address> findAll() {
         return addressMapper.selectAll();
+    }
+
+    //收件地址查询
+    @Override
+    public List<Address> list(String username) {
+        Address address = new Address();
+        address.setUsername(username);
+        return addressMapper.select(address);
     }
 }

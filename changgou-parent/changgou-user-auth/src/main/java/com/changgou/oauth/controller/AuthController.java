@@ -17,7 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping("/user")
 public class AuthController {
 
     //客户端ID

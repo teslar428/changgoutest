@@ -41,7 +41,7 @@ spring:
             - id: changgou_order_web_route
               uri: lb://order-web
               predicates:
-              - Path=/api/wcart/**
+              - Path=/api/wcart/**,/api/worder/**
               filters:
               - StripPrefix=1
 

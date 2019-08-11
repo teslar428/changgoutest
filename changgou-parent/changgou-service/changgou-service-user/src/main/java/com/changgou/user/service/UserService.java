@@ -22,4 +22,7 @@ public interface UserService {
     User findById(String id);
 
     List<User> findAll();
+
+    //增加积分
+    int addUserPoints(String username,Integer point);
 }

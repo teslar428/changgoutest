@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 public class TokenDecode {
     private static final String PUBLIC_KEY = "public.key";
 

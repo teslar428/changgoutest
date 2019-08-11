@@ -1,10 +1,7 @@
 package com.changgou.user.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.changgou.entity.BCrypt;
-import com.changgou.entity.JwtUtil;
-import com.changgou.entity.Result;
-import com.changgou.entity.StatusCode;
+import com.changgou.entity.*;
 import com.changgou.user.pojo.User;
 import com.changgou.user.service.UserService;
 import com.github.pagehelper.PageInfo;
@@ -28,6 +25,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenDecode tokenDecode;
 
     // User分页条件搜索实现
     @PostMapping("/search/{page}/{size}")
@@ -117,4 +117,12 @@ public class UserController {
         return new Result(false, StatusCode.LOGINERROR, "账号或密码错误");
     }
 
+    //增加积分
+    @GetMapping(value = "/points/add")
+    public Result addPoints(Integer points){
+        Map<String, String> userInfo = tokenDecode.getUserInfo();
+        String username = userInfo.get("username");
+        userService.addUserPoints(username,points );
+        return new Result(true,StatusCode.OK,"添加积分成功");
+    }
 }

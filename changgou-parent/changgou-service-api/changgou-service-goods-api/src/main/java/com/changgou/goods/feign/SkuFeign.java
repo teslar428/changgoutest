@@ -48,4 +48,6 @@ public interface SkuFeign {
     @GetMapping("/status/{status}")
     Result findByStatus(@PathVariable("status") String status);
 
+    @PostMapping("/decr/count")
+    Result decrCount(@RequestParam("username") String username);
 }

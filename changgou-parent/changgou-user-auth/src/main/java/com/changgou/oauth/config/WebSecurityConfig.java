@@ -21,6 +21,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
                 "/user/login",
+                "/css/**",
+                "/oauth/login",
+                "/login.html",
+                "/login",
+                "/data/**",
+                "/fonts/**",
+                "/img/**",
+                "/js/**",
                 "/user/logout");
     }
 
@@ -38,15 +46,20 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    //http请求配置
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .httpBasic()        //启用Http基本身份验证
-                .and()
-                .formLogin()       //启用表单身份验证
-                .and()
+                .httpBasic().and()     //启用Http基本身份验证
+//                .formLogin()       //启用表单身份验证
+//                .and()
                 .authorizeRequests()    //限制基于Request请求访问
                 .anyRequest()
                 .authenticated();       //其他请求都需要经过验证
+
+
+        http.formLogin()
+                .loginPage("/oauth/login")              //自定义登录地址
+                .loginProcessingUrl("/user/login");     //登录处理请求地址(springsecurity内置地址)
     }
 }

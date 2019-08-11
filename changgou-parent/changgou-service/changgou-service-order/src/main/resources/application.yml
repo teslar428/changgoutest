@@ -27,6 +27,7 @@ feign:
 ribbon:
   ReadTimeout: 300000
 
+#hystrix 配置
 hystrix:
   command:
     default:
@@ -34,3 +35,4 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 100000
+          strategy: SEMAPHORE

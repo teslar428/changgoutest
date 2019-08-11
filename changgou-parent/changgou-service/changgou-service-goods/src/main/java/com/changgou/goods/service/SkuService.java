@@ -23,4 +23,6 @@ public interface SkuService {
     List<Sku> findAll();
 
     List<Sku> findByStatus(String status);
+
+    void decrCount(String username);
 }

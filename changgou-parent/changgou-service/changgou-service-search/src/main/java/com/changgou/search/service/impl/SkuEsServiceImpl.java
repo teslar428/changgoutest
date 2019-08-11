@@ -217,13 +217,13 @@ public class SkuEsServiceImpl implements SkuEsService {
                     SkuInfo skuInfo = JSON.parseObject(hit.getSourceAsString(), SkuInfo.class);
 
                     //获取高亮数据
-                    HighlightField titleHighlight = hit.getHighlightFields().get("name");      //获取标题的高亮数据
+                    HighlightField highlightField = hit.getHighlightFields().get("name");      //获取标题的高亮数据
 
-                    if (titleHighlight != null) {
+                    if (highlightField != null) {
                         //定义一个字符接收高亮数据
                         StringBuffer buffer = new StringBuffer();
                         //循环获取高亮数据
-                        for (Text text : titleHighlight.getFragments()) {
+                        for (Text text : highlightField.getFragments()) {
                             buffer.append(text.toString());
                         }
                         //将非高亮数据替换成高亮数据
@@ -250,15 +250,13 @@ public class SkuEsServiceImpl implements SkuEsService {
          * 1:给分组查询取别名
          * 2:指定分组查询的域
          */
-        String terms = "skuCategory";
-        String field = "categoryName";
-        builder.addAggregation(AggregationBuilders.terms(terms).field(field));
+        builder.addAggregation(AggregationBuilders.terms("skuCategory").field("categoryName"));
         //执行搜索
         AggregatedPage<SkuInfo> result = esTemplate.queryForPage(builder.build(), SkuInfo.class);
         //获取所有分组查询的数据
         Aggregations aggregations = result.getAggregations();
         //从所有数据中获取别名为skuCategory的数据
-        StringTerms stringTerms = aggregations.get(terms);
+        StringTerms stringTerms = aggregations.get("skuCategory");
         //分装List集合，将搜索结果存入到List集合中
         List<String> categoryList = new ArrayList<String>();
         for (StringTerms.Bucket bucket : stringTerms.getBuckets()) {
@@ -270,15 +268,13 @@ public class SkuEsServiceImpl implements SkuEsService {
     //查询品牌列表
     private List<String> searchBrandList(NativeSearchQueryBuilder builder) {
         //查询聚合品牌 skuBrandGroupby给聚合分组结果起个别名
-        String terms = "skuBrand";
-        String field = "brandName";
-        builder.addAggregation(AggregationBuilders.terms(terms).field(field));
+        builder.addAggregation(AggregationBuilders.terms("skuBrand").field("brandName"));
         //执行搜索
         AggregatedPage<SkuInfo> result = esTemplate.queryForPage(builder.build(), SkuInfo.class);
         //获取聚合品牌结果
         Aggregations aggregations = result.getAggregations();
         //获取分组结果
-        StringTerms stringTerms = aggregations.get(terms);
+        StringTerms stringTerms = aggregations.get("skuBrand");
 
         //返回品牌名称
         List<String> brandList = new ArrayList<String>();
@@ -291,12 +287,10 @@ public class SkuEsServiceImpl implements SkuEsService {
 
     //查询规格列表
     private Map<String, Set<String>> searchSpec(NativeSearchQueryBuilder builder) {
-        String terms = "skuSpec";
-        String field = "spec.keyword";
-        builder.addAggregation(AggregationBuilders.terms(terms).field(field));
+        builder.addAggregation(AggregationBuilders.terms("skuSpec").field("spec.keyword"));
         AggregatedPage<SkuInfo> result = esTemplate.queryForPage(builder.build(), SkuInfo.class);
         Aggregations aggregations = result.getAggregations();
-        StringTerms stringTerms = aggregations.get(terms);
+        StringTerms stringTerms = aggregations.get("skuSpec");
 
         //循环所有规格分组数据，并且将它存入到List<String>集合中
         List<String> specList = new ArrayList<String>();

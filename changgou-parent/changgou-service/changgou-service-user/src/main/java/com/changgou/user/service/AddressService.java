@@ -22,4 +22,6 @@ public interface AddressService {
     Address findById(Integer id);
 
     List<Address> findAll();
+
+    List<Address> list(String username);
 }

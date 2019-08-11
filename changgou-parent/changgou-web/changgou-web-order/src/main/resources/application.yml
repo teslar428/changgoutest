@@ -30,3 +30,5 @@ hystrix:
           thread:
             timeoutInMilliseconds: 10000
           strategy: SEMAPHORE
+
+staticLink: http://192.168.211.132/static

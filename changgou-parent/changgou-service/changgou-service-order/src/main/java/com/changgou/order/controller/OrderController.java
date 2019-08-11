@@ -2,6 +2,8 @@ package com.changgou.order.controller;
 
 import com.changgou.entity.Result;
 import com.changgou.entity.StatusCode;
+import com.changgou.entity.TokenDecode;
+import com.changgou.order.feign.OrderFeign;
 import com.changgou.order.pojo.Order;
 import com.changgou.order.service.OrderService;
 import com.github.pagehelper.PageInfo;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -18,6 +21,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private TokenDecode tokenDecode;
 
     // Order分页条件搜索实现
     @PostMapping("/search/{page}/{size}")
@@ -64,7 +70,9 @@ public class OrderController {
     // 新增Order数据
     @PostMapping
     public Result add(@RequestBody Order order) {
-        //调用OrderService实现添加Order
+        Map<String, String> userInfo = tokenDecode.getUserInfo();
+        String username = userInfo.get("username");
+        order.setUsername(username);
         orderService.add(order);
         return new Result(true, StatusCode.OK, "添加成功");
     }

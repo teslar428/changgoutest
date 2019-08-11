@@ -54,7 +54,7 @@ public class SkuController {
             for (Map.Entry<String, String> entry : searchMap.entrySet()) {
                 String key = entry.getKey();
                 url += key + "=" + entry.getValue() + "&";
-                if (key.equals("sortRule") || key.equals("sortField") || key.equals("pageNum")) {
+                if (key.equalsIgnoreCase("sortRule") || key.equalsIgnoreCase("sortField") || key.equalsIgnoreCase("pageNum")) {
                     continue;
                 }
                 sorturl += key + "=" + entry.getValue() + "&";

@@ -618,8 +618,10 @@
                         <!--左右按钮-->
                         <div class="items">
                             <ul>
-                                <li th:each="img:${imageList}"><img th:src="${img}" th:bimg="${img}"
-                                                                    onmousemove="preview(this)"/></li>
+                                <li th:each="img:${imageList}">
+                                    <img th:src="${img}" th:bimg="${img}"
+                                         onmousemove="preview(this)"/>
+                                </li>
                             </ul>
                         </div>
                         <a class="next">&gt;</a>
@@ -694,7 +696,6 @@
                                 </a>
                             </dd>
                         </dl>
-
                     </div>
 
                     <div class="summary-wrap">
@@ -1518,10 +1519,9 @@
             }
         },
         created: function () {
-            // this.sku = this.skuList[0];
-            // this.spec = this.sku.spec;
-            // console.log(typeof this.spec);
+            //JSON.stringify()将对象转换成字符串
             this.sku = JSON.parse(JSON.stringify(this.skuList[0]));
+            //this.skuList[0].spec已经是字符串,不需要再次使用JSON.stringify()
             this.spec = JSON.parse(this.skuList[0].spec);
         }
 

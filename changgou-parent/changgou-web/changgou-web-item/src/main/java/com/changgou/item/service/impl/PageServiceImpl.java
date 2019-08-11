@@ -40,7 +40,6 @@ public class PageServiceImpl implements PageService {
     private String pagepath;
 
     private Map<String, Object> buildDataModel(Long spuId) {
-        //获取spu和sku列表
         Result<Spu> result = spuFeign.findById(spuId);
         Spu spu = result.getData();
 
@@ -67,7 +66,6 @@ public class PageServiceImpl implements PageService {
     //生成静态页
     @Override
     public void createPageHtml(Long spuId) {
-        //上下文
         Context context = new Context();
         Map<String, Object> dataModel = buildDataModel(spuId);
         context.setVariables(dataModel);

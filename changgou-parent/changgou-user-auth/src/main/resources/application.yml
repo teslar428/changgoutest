@@ -19,6 +19,8 @@ spring:
     password: 123456
   main:
     allow-bean-definition-overriding: true
+#  mvc:
+#    static-path-pattern: /static/**
 eureka:
   instance:
     prefer-ip-address: true
