@@ -5,17 +5,21 @@ import com.changgou.oauth.util.UserJwt;
 import com.changgou.user.feign.UserFeign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //自定义授权认证类
 @Service
@@ -47,13 +51,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return null;
         }
 
-
-        Result<com.changgou.user.pojo.User> user = userFeign.findById(username);
+        Result<com.changgou.user.pojo.User> userResult = userFeign.findById(username);
 
         //根据用户名查询用户信息
         //创建User对象
-        String permissions = "salesman,accountant,user";
-        UserJwt userDetails = new UserJwt(username, user.getData().getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList(permissions));
+        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+        list.add(new SimpleGrantedAuthority("admin"));
+        list.add(new SimpleGrantedAuthority("salesman"));
+        list.add(new SimpleGrantedAuthority("accounttant"));
+        list.add(new SimpleGrantedAuthority("user"));
+//        String permissions = "salesman,accountant,user";
+//        UserJwt userDetails = new UserJwt(username, userResult.getData().getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList(permissions));
+        UserJwt userDetails = new UserJwt(username, userResult.getData().getPassword(), list);
         return userDetails;
     }
 }

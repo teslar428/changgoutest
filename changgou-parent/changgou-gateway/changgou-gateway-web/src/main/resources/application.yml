@@ -21,8 +21,8 @@ spring:
               - name: RequestRateLimiter #请求数限流 名字不能随便写 ，使用默认的facatory
                 args:
                   key-resolver: "#{@ipKeyResolver}"
-                  redis-rate-limiter.replenishRate: 1
-                  redis-rate-limiter.burstCapacity: 1
+                  redis-rate-limiter.replenishRate: 1   #令牌桶的容积
+                  redis-rate-limiter.burstCapacity: 5   #流速 每秒
             #用户微服务
             - id: changgou_user_route
               uri: lb://user

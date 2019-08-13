@@ -57,7 +57,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated();       //其他请求都需要经过验证
 
-
         http.formLogin()
                 .loginPage("/oauth/login")              //自定义登录地址
                 .loginProcessingUrl("/user/login");     //登录处理请求地址(springsecurity内置地址)

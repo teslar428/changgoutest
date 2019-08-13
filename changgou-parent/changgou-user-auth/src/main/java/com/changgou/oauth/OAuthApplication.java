@@ -11,7 +11,6 @@ import tk.mybatis.spring.annotation.MapperScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = "com.changgou.user.feign")
-//@MapperScan(basePackages = "com.changgou.oauth.dao")
 public class OAuthApplication {
 
     public static void main(String[] args) {

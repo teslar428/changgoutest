@@ -16,7 +16,5 @@ spring:
     name: item
   main:
     allow-bean-definition-overriding: true
-  mvc:
-    static-path-pattern: /static/**
-# 生成静态页的位置
-pagepath: M:/ideawork/changgou/changgou-parent/changgou-web/changgou-web-item/src/main/resources/templates/items
+#  mvc:
+#    static-path-pattern: /static/**

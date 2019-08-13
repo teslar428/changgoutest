@@ -174,9 +174,17 @@ public class SkuServiceImpl implements SkuService {
         //循环递减
         for (OrderItem orderItem : orderItems) {
             int count = skuMapper.decrCount(orderItem);
-            if (count<=0){
+            if (count <= 0) {
                 throw new RuntimeException("库存不足,递减失败");
             }
+        }
+    }
+
+    @Override
+    public void incrCount(String username) {
+        List<OrderItem> orderItems = redisTemplate.boundHashOps("Cart_" + username).values();
+        for (OrderItem orderItem : orderItems) {
+            skuMapper.incrCount(orderItem);
         }
     }
 }

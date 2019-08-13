@@ -50,4 +50,7 @@ public interface SkuFeign {
 
     @PostMapping("/decr/count")
     Result decrCount(@RequestParam("username") String username);
+
+    @PostMapping("/incr/count")
+    Result incrCount(@RequestParam("username") String username);
 }

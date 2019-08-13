@@ -171,27 +171,49 @@
     }
 </script>
 <script th:inline="javascript">
+    var job;
+
     var app = new Vue({
         el: '#app',
         data: {
             msg: '',
             username: '',
             password: '',
-            from: [[${from}]]
+            from: [[${from}]],
+            point: ''
         },
         methods: {
             login: function () {
-                app.msg = "正在登录...";
+                if (app.username==null||app.username==''){
+                    app.$message.error("账号不能为空!");
+                    return false;
+                }
+                if(app.password==null ||app.password==''){
+                    app.$message.error("密码不能为空!");
+                    return false;
+                }
+                app.msg = "正在登录";
+                job = setInterval("app.msgc()", 300);
+
                 axios.post("/user/login?username=" + app.username + "&password=" + app.password).then((res) => {
                     if (res.data.flag) {
+                        clearInterval(job);
                         app.msg = "登录成功,即将跳转...";
-                        setTimeout(function () {
+                        que = setTimeout(function () {
                             location.href = app.from;
-                        }, 1000)
+                        }, 3000);
                     } else {
                         app.msg = res.data.message;
                     }
                 }).catch();
+            },
+            msgc: function () {
+                app.point += '.';
+                if (app.point == '.......') {
+                    app.point = '';
+                }
+                app.msg = "正在登录" + app.point;
+                this.$forceUpdate();
             }
         }
     });

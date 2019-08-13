@@ -53,10 +53,11 @@ public class SkuController {
             sorturl += "?";
             for (Map.Entry<String, String> entry : searchMap.entrySet()) {
                 String key = entry.getKey();
-                url += key + "=" + entry.getValue() + "&";
+                String value = entry.getValue();
                 if (key.equalsIgnoreCase("sortRule") || key.equalsIgnoreCase("sortField") || key.equalsIgnoreCase("pageNum")) {
                     continue;
                 }
+                url += key + "=" + value + "&";
                 sorturl += key + "=" + entry.getValue() + "&";
             }
             //去掉最后一个&

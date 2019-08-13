@@ -22,4 +22,8 @@ public interface OrderLogService {
     OrderLog findById(String id);
 
     List<OrderLog> findAll();
+
+    //根据用户名和订单号查询日志信息
+    OrderLog queryOrderLog(String username, String orderId);
+
 }

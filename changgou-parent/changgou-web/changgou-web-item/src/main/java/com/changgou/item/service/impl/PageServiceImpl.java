@@ -8,16 +8,13 @@ import com.changgou.goods.feign.SpuFeign;
 import com.changgou.goods.pojo.Sku;
 import com.changgou.goods.pojo.Spu;
 import com.changgou.item.service.PageService;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +32,6 @@ public class PageServiceImpl implements PageService {
 
     @Autowired
     private TemplateEngine templateEngine;
-
-    @Value("${pagepath}")
-    private String pagepath;
 
     private Map<String, Object> buildDataModel(Long spuId) {
         Result<Spu> result = spuFeign.findById(spuId);
@@ -70,16 +64,18 @@ public class PageServiceImpl implements PageService {
         Map<String, Object> dataModel = buildDataModel(spuId);
         context.setVariables(dataModel);
 
+        String path = PageServiceImpl.class.getResource("/").getPath() + "/items";
+
         //准备文件
-        File dir = new File(pagepath);
+        File dir = new File(path);
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        File dest = new File(dir, spuId + ".html");
 
         //3.生成页面
-        try (PrintWriter writer = new PrintWriter(dest, "UTF-8")) {
-            templateEngine.process("item", context, writer);
+        try {
+            FileWriter fileWriter = new FileWriter(path + "/" + spuId + ".html");
+            templateEngine.process("item", context, fileWriter);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,7 +83,7 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public void deletePageHtml(Long spuId) {
-        new File(pagepath , spuId + ".html").delete();
+        new File(PageServiceImpl.class.getResource("/").getPath() + "/items", spuId + ".html").delete();
     }
 
 }

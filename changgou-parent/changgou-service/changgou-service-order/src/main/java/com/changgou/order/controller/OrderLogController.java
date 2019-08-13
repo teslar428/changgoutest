@@ -2,6 +2,7 @@ package com.changgou.order.controller;
 
 import com.changgou.entity.Result;
 import com.changgou.entity.StatusCode;
+import com.changgou.entity.TokenDecode;
 import com.changgou.order.pojo.OrderLog;
 import com.changgou.order.service.OrderLogService;
 import com.github.pagehelper.PageInfo;
@@ -18,6 +19,9 @@ public class OrderLogController {
 
     @Autowired
     private OrderLogService orderLogService;
+
+    @Autowired
+    private TokenDecode tokenDecode;
 
     // OrderLog分页条件搜索实现
     @PostMapping("/search/{page}/{size}")
@@ -83,5 +87,12 @@ public class OrderLogController {
         //调用OrderLogService实现查询所有OrderLog
         List<OrderLog> list = orderLogService.findAll();
         return new Result<List<OrderLog>>(true, StatusCode.OK, "查询成功", list);
+    }
+
+    @GetMapping("/query")
+    public Result queryOrderLog(String orderId) {
+        String username = tokenDecode.getUserInfo().get("username");
+        OrderLog orderLog = orderLogService.queryOrderLog(username, orderId);
+        return new Result(true, StatusCode.OK, "查询订单日志成功", orderLog);
     }
 }

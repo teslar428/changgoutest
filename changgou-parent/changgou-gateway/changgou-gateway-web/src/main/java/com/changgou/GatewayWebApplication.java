@@ -13,19 +13,27 @@ import reactor.core.publisher.Mono;
 public class GatewayWebApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GatewayWebApplication.class,args);
+        SpringApplication.run(GatewayWebApplication.class, args);
     }
 
     //ip限流
-    @Bean(name="ipKeyResolver")
+    @Bean(name = "ipKeyResolver")
     public KeyResolver userKeyResolver() {
         return new KeyResolver() {
             @Override
             public Mono<String> resolve(ServerWebExchange exchange) {
-                //获取远程客户端IP
+                //IP限流
                 String hostName = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
                 System.out.println("hostName:"+hostName);
                 return Mono.just(hostName);
+
+                //用户限流
+//                String userId = exchange.getRequest().getQueryParams().getFirst("userId");
+//                return Mono.just(userId);
+
+                //接口限流
+//                String value = exchange.getRequest().getPath().value();
+//                return Mono.just(value);
             }
         };
     }

@@ -42,11 +42,12 @@ public class AuthController {
     @PostMapping("/login")
     public Result login(String username, String password) {
         if(StringUtils.isEmpty(username)){
-            throw new RuntimeException("用户名不允许为空");
+            throw new RuntimeException("账号不能为空");
         }
         if(StringUtils.isEmpty(password)){
-            throw new RuntimeException("密码不允许为空");
+            throw new RuntimeException("密码不能为空");
         }
+
         //申请令牌
         AuthToken authToken =  authService.login(username,password,clientId,clientSecret);
 

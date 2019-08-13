@@ -50,25 +50,14 @@ public class JwtUtil {
         return builder.compact();
     }
 
-    /**
-     * 生成加密 secretKey
-     *
-     * @return
-     */
+    //生成加密 secretKey
     public static SecretKey generalKey() {
         byte[] encodedKey = Base64.getDecoder().decode(JwtUtil.JWT_KEY);
         SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
         return key;
     }
 
-
-    /**
-     * 解析令牌数据
-     *
-     * @param jwt
-     * @return
-     * @throws Exception
-     */
+    //解析令牌数据
     public static Claims parseJWT(String jwt) throws Exception {
         SecretKey secretKey = generalKey();
         return Jwts.parser()

@@ -3,9 +3,11 @@ package com.changgou.order.service.impl;
 import com.changgou.entity.IdWorker;
 import com.changgou.goods.feign.SkuFeign;
 import com.changgou.order.dao.OrderItemMapper;
+import com.changgou.order.dao.OrderLogMapper;
 import com.changgou.order.dao.OrderMapper;
 import com.changgou.order.pojo.Order;
 import com.changgou.order.pojo.OrderItem;
+import com.changgou.order.pojo.OrderLog;
 import com.changgou.order.service.CartService;
 import com.changgou.order.service.OrderService;
 import com.changgou.user.feign.UserFeign;
@@ -43,6 +45,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private UserFeign userFeign;
+
+    @Autowired
+    private OrderLogMapper orderLogMapper;
 
     // Order条件+分页查询
     @Override
@@ -243,12 +248,30 @@ public class OrderServiceImpl implements OrderService {
             orderItemMapper.insertSelective(orderItem);
         }
 
+        //线上支付,记录支付日志
+        if (order.getPayType().equals("1")) {
+            OrderLog orderLog = new OrderLog();
+            orderLog.setId(String.valueOf(idWorker.nextId()));
+            orderLog.setOrderId(order.getId());
+            orderLog.setMoney(order.getPayMoney());
+            orderLog.setOrderStatus(order.getOrderStatus());
+            orderLog.setPayStatus(order.getPayStatus());
+            orderLog.setConsignStatus(order.getConsignStatus());
+            orderLog.setUsername(order.getUsername());
+            orderLog.setRemarks("创建支付记录");
+
+            //存储完整日志信息
+            redisTemplate.boundHashOps("OrderLog").put(orderLog.getId(), orderLog);
+            //拥有定时任务定时读取,检测是否已支付
+            redisTemplate.boundListOps("OrderLogList").leftPush(orderLog.getId());
+            //存放用户对应的订单和订单日志id
+            redisTemplate.boundHashOps("OrderMappingLog" + order.getUsername()).put(order.getId(), orderLog.getId());
+        }
+
         //库存减少
         skuFeign.decrCount(order.getUsername());
 
-        userFeign.addPoints(10);
-
-        redisTemplate.delete("Cart_" + order.getUsername());
+//        redisTemplate.delete("Cart_" + order.getUsername());
         return count;
     }
 
@@ -262,5 +285,52 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findAll() {
         return orderMapper.selectAll();
+    }
+
+    /***
+     * 修改订单状态
+     * @param username：用户登录名
+     * @param orderId：订单ID
+     * @param transactionId：交易流水号
+     * @param orderLog:日志数据
+     */
+    @Override
+    public void updateStatus(String username, String orderId, String transactionId, OrderLog orderLog) {
+        Order order = orderMapper.selectByPrimaryKey(orderId);
+        if (order != null) {
+            order.setTransactionId(transactionId);
+            order.setPayStatus("1");//支付状态,0:未支付,1:已支付,2:支付失败
+            order.setPayTime(new Date());//支付时间
+            order.setUpdateTime(new Date());//更新时间
+
+            //修改日志支付状态
+            orderLog.setPayStatus(order.getPayStatus());
+
+            //更新数据到数据库
+            orderMapper.updateByPrimaryKeySelective(order);
+            orderLogMapper.insertSelective(orderLog);
+
+            //增加积分
+            userFeign.addPoints(10);
+
+            redisTemplate.delete("Cart_" + order.getUsername());
+
+            //清理redis缓存
+            redisTemplate.boundHashOps("OrderMappingLog" + order.getUsername()).delete(order.getId());
+            redisTemplate.boundHashOps("OrderLog").delete(orderLog.getId());
+        }
+    }
+
+    @Override
+    public void deleteOrder(OrderLog orderLog) {
+        Order order = orderMapper.selectByPrimaryKey(orderLog.getOrderId());
+        order.setPayStatus("2");
+        order.setUpdateTime(new Date());
+        orderMapper.updateByPrimaryKeySelective(order);
+
+        skuFeign.incrCount(order.getUsername());
+
+        redisTemplate.boundHashOps("OrderMappingLog" + order.getUsername()).delete(order.getId());
+        redisTemplate.boundHashOps("OrderLog").delete(orderLog.getId());
     }
 }

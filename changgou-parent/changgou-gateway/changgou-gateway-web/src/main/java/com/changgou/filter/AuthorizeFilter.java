@@ -1,7 +1,5 @@
 package com.changgou.filter;
 
-import com.changgou.utils.JwtUtil;
-import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -24,7 +22,6 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
     //全局过滤器
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpResponse response = exchange.getResponse();
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
         if (path.startsWith("/api/user/login") || path.startsWith("/api/brand/search/") || !URLFilter.hasAuthorize(path)) {
@@ -48,6 +45,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
         //如果请求参数中也没有token,则输出错误代码/跳转到登录页面
         if (StringUtils.isEmpty(token)) {
+//            ServerHttpResponse response = exchange.getResponse();
 //            response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
 //            return response.setComplete();
             return needAuthorization(USER_LOGIN_URL + "?FROM=" + request.getURI(), exchange);//FROM为原目标URI
@@ -56,14 +54,14 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         try {
 //            Claims claims = JwtUtil.parseJWT(token);
 //            request.mutate().header(AUTHORIZE_TOKEN, claims.toString());
-            request.mutate().header(AUTHORIZE_TOKEN, "Bearer" + token);
+            request.mutate().header(AUTHORIZE_TOKEN, "Bearer " + token);
         } catch (Exception e) {
             e.printStackTrace();
             //文档解析失败,响应401错误
 //            response.setStatusCode(HttpStatus.UNAUTHORIZED);
 //            return response.setComplete();
 
-            return needAuthorization(USER_LOGIN_URL + "?FROM" + request.getURI(), exchange);
+            return needAuthorization(USER_LOGIN_URL + "?FROM=" + request.getURI(), exchange);
         }
         return chain.filter(exchange);
     }

@@ -93,9 +93,14 @@ public class SkuController {
 
     //库存递减
     @PostMapping("/decr/count")
-    public Result decrCount(String username){
+    public Result decrCount(String username) {
         skuService.decrCount(username);
-        return new Result(true,StatusCode.OK,"库存递减成功");
+        return new Result(true, StatusCode.OK, "库存递减成功");
     }
 
+    @PostMapping("/incr/count")
+    public Result incrCount(String username) {
+        skuService.incrCount(username);
+        return new Result(true, StatusCode.OK, "库存回滚成功");
+    }
 }

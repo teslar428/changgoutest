@@ -112,85 +112,88 @@
         <h4>全部商品
             <span></span>
         </h4>
-        <div class="cart-main">
-            <div class="yui3-g cart-th">
-                <div class="yui3-u-1-4">
-                    <input class="chooseAll" type="checkbox" name="" id="" value=""/> 全部
-                </div>
-                <div class="yui3-u-1-4">商品</div>
-                <div class="yui3-u-1-8">单价（元）</div>
-                <div class="yui3-u-1-8">数量</div>
-                <div class="yui3-u-1-8">小计（元）</div>
-                <div class="yui3-u-1-8">操作</div>
-            </div>
-            <div class="cart-item-list" id="app">
-                <div class="cart-body">
-                    <!-- vue loadlist -->
-                    <div class="cart-list" v-for="item in items" :key="item.index">
-                        <ul class="goods-list yui3-g">
-                            <li class="yui3-u-1-24">
-                                <input type="checkbox" name="chk_list"/>
-                                <!--<input type="checkbox" name="chk_list" id="" value=""/>-->
-                            </li>
-                            <li class="yui3-u-6-24">
-                                <div class="good-item">
-                                    <div class="item-img">
-                                        <img :src="item.image" style="max-height: 80px"/>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="yui3-u-5-24">
-                                <div class="item-txt">{{item.name}}</div>
-                            </li>
-                            <li class="yui3-u-1-8">
-                                <span class="price">{{item.price}}</span>
-                            </li>
-                            <li class="yui3-u-1-8">
-                                <a href="javascript:void(0)" class="increment mins" @click="add(item.num-1,item.skuId)">-</a>
-                                <input autocomplete="off" type="text" value="1" minnum="1" class="itxt"
-                                       v-model="item.num" @blur="add(item.num,item.skuId)"/>
-                                <a href="javascript:void(0)" class="increment plus" @click="add(item.num+1,item.skuId)">+</a>
-                            </li>
-                            <li class="yui3-u-1-8">
-                                <span class="sum">{{item.price*item.num}}</span>
-                            </li>
-                            <li class="yui3-u-1-8">
-                                <a href="#none">删除</a>
-                                <br/>
-                                <a href="#none">移到收藏</a>
-                            </li>
-                        </ul>
+        <div id="app">
+            <div class="cart-main">
+                <div class="yui3-g cart-th">
+                    <div class="yui3-u-1-4">
+                        <input class="chooseAll" type="checkbox" name="" id="" value=""/> 全部
                     </div>
+                    <div class="yui3-u-1-4">商品</div>
+                    <div class="yui3-u-1-8">单价（元）</div>
+                    <div class="yui3-u-1-8">数量</div>
+                    <div class="yui3-u-1-8">小计（元）</div>
+                    <div class="yui3-u-1-8">操作</div>
+                </div>
+                <div class="cart-item-list">
+                    <div class="cart-body">
+                        <!-- vue loadlist -->
+                        <div class="cart-list" v-for="item in items" :key="item.index">
+                            <ul class="goods-list yui3-g">
+                                <li class="yui3-u-1-24">
+                                    <input type="checkbox" name="chk_list"/>
+                                </li>
+                                <li class="yui3-u-6-24">
+                                    <div class="good-item">
+                                        <div class="item-img">
+                                            <img :src="item.image" style="max-height: 80px"/>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="yui3-u-5-24">
+                                    <div class="item-txt">{{item.name}}</div>
+                                </li>
+                                <li class="yui3-u-1-8">
+                                    <span class="price">{{item.price}}</span>
+                                </li>
+                                <li class="yui3-u-1-8">
+                                    <a href="javascript:void(0)" class="increment mins"
+                                       @click="add(item.num-1,item.skuId)">-</a>
+                                    <input autocomplete="off" type="text" value="1" minnum="1" class="itxt"
+                                           v-model="item.num" @blur="add(item.num,item.skuId)"/>
+                                    <a href="javascript:void(0)" class="increment plus"
+                                       @click="add(item.num+1,item.skuId)">+</a>
+                                </li>
+                                <li class="yui3-u-1-8">
+                                    <span class="sum">{{item.price*item.num}}</span>
+                                </li>
+                                <li class="yui3-u-1-8">
+                                    <a href="#none">删除</a>
+                                    <br/>
+                                    <a href="#none">移到收藏</a>
+                                </li>
+                            </ul>
+                        </div>
 
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="cart-tool">
-            <div class="select-all">
-                <input class="chooseAll" type="checkbox"/>
-                <span>全选</span>
-            </div>
-            <div class="option">
-                <a href="#none">删除选中的商品</a>
-                <a href="#none">移到我的关注</a>
-                <a href="#none">清除下柜商品</a>
-            </div>
-            <div class="money-box">
-                <div class="chosed">已选择
-                    <span>0</span>件商品
+            <div class="cart-tool">
+                <div class="select-all">
+                    <input class="chooseAll" type="checkbox"/>
+                    <span>全选</span>
                 </div>
-                <div class="sumprice">
+                <div class="option">
+                    <a href="#none">删除选中的商品</a>
+                    <a href="#none">移到我的关注</a>
+                    <a href="#none">清除下柜商品</a>
+                </div>
+                <div class="money-box">
+                    <div class="chosed">已选择
+                        <span>0</span>件商品
+                    </div>
+                    <div class="sumprice">
 						<span>
 							<em>总价（不含运费） ：</em>
-							<i class="summoney">¥16283.00</i>
+							<i class="summoney">{{payMoney}}</i>
 						</span>
-                    <span>
+                        <span>
 							<em>已节省：</em>
 							<i>-¥20.00</i>
 						</span>
-                </div>
-                <div class="sumbtn">
-                    <a class="sum-btn" href="/api/worder/ready/order" target="_blank">结算</a>
+                    </div>
+                    <div class="sumbtn">
+                        <a class="sum-btn" href="/api/worder/ready/order" target="_blank">结算</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -505,31 +508,43 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.8/dist/vue.js"></script>
 <script src="https://cdn.bootcss.com/element-ui/2.5.4/index.js"></script>
 
-
-<script type="text/javascript">
-    $(".chooseAll").click(function () {
-        $("input[name='chk_list']").prop("checked", $(this).prop("checked"));
-    })
-</script>
-
 <script th:inline="javascript">
     var app = new Vue({
         el: '#app',
         data: {
-            items: [[${items}]]
+            items: [[${items}]],
+            payMoney: ''
+        },
+        created() {
+            this.shouldPay();
         },
         methods: {
             add: function (num, id) {
                 axios.get("/api/wcart/json/add?num=" + num + "&id=" + id).then((res) => {
                     if (res.data.flag) {
                         app.items = res.data.data;
+                        this.shouldPay();
                     } else {
                         alert(res.data.data);
                     }
                 }).catch();
+            },
+            shouldPay() {
+                this.payMoney = 0;
+                for (var i = 0; i < this.items.length; i++) {
+                    var money = 0;
+                    money = this.payMoney;
+                    this.payMoney = ￥+(parseFloat(money) + parseFloat(this.items[i].money));
+                }
             }
         }
     });
+</script>
+
+<script type="text/javascript">
+    $(".chooseAll").click(function () {
+        $("input[name='chk_list']").prop("checked", $(this).prop("checked"));
+    })
 </script>
 </body>
 

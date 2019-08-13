@@ -16,5 +16,18 @@ spring:
     name: search-web
   main:
     allow-bean-definition-overriding: true
-  mvc:
-    static-path-pattern: /static/**
+#  mvc:
+#    static-path-pattern: /static/**
+
+#超时配置
+#ribbon:
+#  ReadTimeout: 300000
+#
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 10000
+#          strategy: SEMAPHORE

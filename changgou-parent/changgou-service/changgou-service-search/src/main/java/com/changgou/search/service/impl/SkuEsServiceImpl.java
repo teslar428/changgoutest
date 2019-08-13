@@ -237,7 +237,6 @@ public class SkuEsServiceImpl implements SkuEsService {
                 return new AggregatedPageImpl<T>(list, pageable, response.getHits().getTotalHits());
             }
         });
-
         resultMap.put("rows", skuPage.getContent());
         resultMap.put("totalPages", skuPage.getTotalPages());
         return resultMap;
