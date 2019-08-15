@@ -39,3 +39,14 @@ encrypt:
     secret: changgou
     alias: changgou
     password: changgou
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+        #如果enabled设置为false，则请求超时交给ribbon控制
+          enabled: true
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 10000

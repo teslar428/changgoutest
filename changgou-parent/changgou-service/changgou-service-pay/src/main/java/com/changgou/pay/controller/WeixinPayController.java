@@ -8,10 +8,7 @@ import com.github.wxpay.sdk.WXPayUtil;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
@@ -32,15 +29,15 @@ public class WeixinPayController {
     @Value("${mq.pay.queue.order}")
     private String queue;
 
-    @Value("${mq.pay.routing.key}")
+    @Value("${mq.pay.routing.orderkey}")
     private String routing;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
     @RequestMapping("/create/native")
-    public Result createNative(String outtradeno, String money) {
-        Map<String, String> resultMap = weixinPayService.createNative(outtradeno, money);
+    public Result createNative(@RequestParam Map<String, String> parameter) {
+        Map<String, String> resultMap = weixinPayService.createNative(parameter);
         return new Result(true, StatusCode.OK, "创建二维码预付订单成功", resultMap);
     }
 
@@ -63,12 +60,15 @@ public class WeixinPayController {
             }
             outputStream.close();
             inputStream.close();
+
             String result = new String(outputStream.toByteArray());
 
             //将支付回调数据转换成xml字符串
             Map<String, String> map = WXPayUtil.xmlToMap(result);
+
+            Map<String, String> attach = JSON.parseObject(map.get("attach"), Map.class);
             //发送消息
-            rabbitTemplate.convertAndSend(exchange, routing, JSON.toJSONString(map));
+            rabbitTemplate.convertAndSend(exchange, attach.get("queue"), JSON.toJSONString(map));
 
             Map resultMap = new HashMap();
             resultMap.put("return_code", "SUCCESS");
@@ -78,5 +78,11 @@ public class WeixinPayController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @RequestMapping("/close")
+    public Result closePay(Long orderId) throws Exception {
+        Map<String, String> map = weixinPayService.closePay(orderId);
+        return new Result(true, StatusCode.OK, "关闭订单成功", map);
     }
 }

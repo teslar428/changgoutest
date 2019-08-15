@@ -184,7 +184,7 @@
                     <div class="sumprice">
 						<span>
 							<em>总价（不含运费） ：</em>
-							<i class="summoney">{{payMoney}}</i>
+							<i class="summoney">￥{{payMoney}}</i>
 						</span>
                         <span>
 							<em>已节省：</em>
@@ -534,7 +534,7 @@
                 for (var i = 0; i < this.items.length; i++) {
                     var money = 0;
                     money = this.payMoney;
-                    this.payMoney = ￥+(parseFloat(money) + parseFloat(this.items[i].money));
+                    this.payMoney = (parseFloat(money) + parseFloat(this.items[i].money));
                 }
             }
         }

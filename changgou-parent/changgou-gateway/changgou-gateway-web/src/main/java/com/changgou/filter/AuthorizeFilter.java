@@ -24,7 +24,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
-        if (path.startsWith("/api/user/login") || path.startsWith("/api/brand/search/") || !URLFilter.hasAuthorize(path)) {
+        if (path.startsWith("/api/user/login")||path.startsWith("/api/user/add") || path.startsWith("/api/brand/search/") || !URLFilter.hasAuthorize(path)) {
             //放行
             Mono<Void> filter = chain.filter(exchange);
             return filter;
@@ -45,22 +45,13 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
         //如果请求参数中也没有token,则输出错误代码/跳转到登录页面
         if (StringUtils.isEmpty(token)) {
-//            ServerHttpResponse response = exchange.getResponse();
-//            response.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED);
-//            return response.setComplete();
             return needAuthorization(USER_LOGIN_URL + "?FROM=" + request.getURI(), exchange);//FROM为原目标URI
         }
         //解析令牌数据
         try {
-//            Claims claims = JwtUtil.parseJWT(token);
-//            request.mutate().header(AUTHORIZE_TOKEN, claims.toString());
             request.mutate().header(AUTHORIZE_TOKEN, "Bearer " + token);
         } catch (Exception e) {
             e.printStackTrace();
-            //文档解析失败,响应401错误
-//            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-//            return response.setComplete();
-
             return needAuthorization(USER_LOGIN_URL + "?FROM=" + request.getURI(), exchange);
         }
         return chain.filter(exchange);

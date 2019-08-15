@@ -1,6 +1,6 @@
 package com.changgou.order;
 
-import com.changgou.entity.FeignInterceptor;
+import com.changgou.interceptor.FeignInterceptor;
 import com.changgou.entity.IdWorker;
 import com.changgou.entity.TokenDecode;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +13,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"com.changgou.goods.feign","com.changgou.user.feign"})
+@EnableFeignClients(basePackages = {"com.changgou.goods.feign","com.changgou.user.feign","com.changgou.pay.feign"})
 @MapperScan(basePackages = {"com.changgou.order.dao"})
 @EnableScheduling
 public class OrderApplication {

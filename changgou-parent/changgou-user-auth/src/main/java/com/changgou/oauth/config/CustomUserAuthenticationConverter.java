@@ -29,7 +29,7 @@ public class CustomUserAuthenticationConverter extends DefaultUserAuthentication
         if(principal instanceof  UserJwt){
             userJwt = (UserJwt) principal;
         }else{
-            //refresh_token默认不去调用userdetailService获取用户信息，这里我们手动去调用，得到 UserJwt
+            //refresh_token默认不去调用userdetailService获取用户信息，需要手动去调用，得到 UserJwt
             UserDetails userDetails = userDetailsService.loadUserByUsername(name);
             userJwt = (UserJwt) userDetails;
         }

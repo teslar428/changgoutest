@@ -34,7 +34,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void add(Integer num, Long id, String username) {
         if (num <= 0) {
-            redisTemplate.boundHashOps("Cart_" + username).delete("" + id);
+            redisTemplate.boundHashOps("Cart_" + username).delete(id);
             return;
         }
         Result<Sku> skuResult = skuFeign.findById(id);
@@ -46,7 +46,7 @@ public class CartServiceImpl implements CartService {
             //将sku和spu转换成orderitem
             OrderItem orderItem = sku2OrderItem(sku, spu, num);
             //购物车数据存入redis
-            redisTemplate.boundHashOps("Cart_" + username).put("" + id, orderItem);
+            redisTemplate.boundHashOps("Cart_" + username).put(id, orderItem);
         }
     }
 

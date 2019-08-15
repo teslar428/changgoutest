@@ -1,9 +1,9 @@
 package com.changgou.order.task;
 
 import com.changgou.entity.Result;
-import com.changgou.order.feign.WeixinPayFeign;
 import com.changgou.order.pojo.OrderLog;
 import com.changgou.order.service.OrderService;
+import com.changgou.pay.feign.WeixinPayFeign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;

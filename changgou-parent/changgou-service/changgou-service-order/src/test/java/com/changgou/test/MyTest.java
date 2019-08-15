@@ -1,6 +1,7 @@
 package com.changgou.test;
 
 
+import com.changgou.entity.IdWorker;
 import com.changgou.goods.pojo.Sku;
 import com.changgou.order.OrderApplication;
 import com.changgou.order.pojo.OrderItem;
@@ -22,6 +23,8 @@ public class MyTest {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private IdWorker idWorker;
 
     @Test
     public void fun01() {
@@ -60,7 +63,23 @@ public class MyTest {
     }
 
     @Test
-    public void fun05(){
+    public void fun05() {
+        Object testxxx = redisTemplate.boundHashOps("testxxx").get(Long.parseLong("1161544016878243840"));
+        System.out.println("---------------------------------------------------" + testxxx);
+    }
+
+    @Test
+    public void fun06() {
+//        Long id = idWorker.nextId();
+//        System.out.println("----------------------------------" + id);
+        redisTemplate.boundHashOps("testxxx").put(Long.parseLong("1161544016878243840"), "测试测试测试");
+
+        //1161544016878243840
+    }
+
+    @Test
+    public void fun07(){
+        redisTemplate.boundHashOps("testxxx").delete(Long.parseLong("1161544016878243840"));
     }
 
 }

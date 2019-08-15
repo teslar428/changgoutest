@@ -1,6 +1,6 @@
 package com.changgou.order;
 
-import com.changgou.entity.FeignInterceptor;
+import com.changgou.interceptor.FeignInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;

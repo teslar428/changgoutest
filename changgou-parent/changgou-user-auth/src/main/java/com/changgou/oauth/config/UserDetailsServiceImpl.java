@@ -34,6 +34,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     //自定义授权认证
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        //授权码模式
+
         //取出身份，如果身份为空说明没有认证
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //没有认证统一采用httpbasic认证，httpbasic中存储了client_id和client_secret，开始认证client_id和client_secret
@@ -50,6 +52,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (StringUtils.isEmpty(username)) {
             return null;
         }
+
+        //密码模式
 
         Result<com.changgou.user.pojo.User> userResult = userFeign.findById(username);
 

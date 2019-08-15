@@ -1,4 +1,4 @@
-package com.changgou.order.feign;
+package com.changgou.pay.feign;
 
 import com.changgou.entity.Result;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,4 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface WeixinPayFeign {
     @GetMapping("/status/query")
     Result queryStatus(String orderId);
+
+    @RequestMapping("/close")
+    Result closePay(Long orderId);
 }
