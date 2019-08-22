@@ -20,13 +20,13 @@ public class ${Table}Controller {
 
     // ${Table}分页条件搜索实现
     <#if swagger==true>
-    @ApiOperation(value = "${Table}条件分页查询",notes = "分页条件查询${Table}方法详情",tags = {"${Table}Controller"})
+    @ApiOperation("${Table}条件分页查询",notes = "分页条件查询${Table}方法详情",tags = {"${Table}Controller"})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "path", name = "page", value = "当前页", required = true, dataType = "Integer"),
             @ApiImplicitParam(paramType = "path", name = "size", value = "每页显示条数", required = true, dataType = "Integer")
     })
     </#if>
-    @PostMapping(value = "/search/{page}/{size}" )
+    @PostMapping("/search/{page}/{size}" )
     public Result<PageInfo> findPage(@RequestBody(required = false) <#if swagger==true>@ApiParam(name = "${Table}对象",value = "传入JSON数据",required = false)</#if> ${Table} ${table}, @PathVariable("page")  int page, @PathVariable("size")  int size){
         //调用${Table}Service实现分页条件查询${Table}
         PageInfo<${Table}> pageInfo = ${table}Service.findPage(${table}, page, size);
@@ -35,13 +35,13 @@ public class ${Table}Controller {
 
     // ${Table}分页搜索实现
     <#if swagger==true>
-    @ApiOperation(value = "${Table}分页查询",notes = "分页查询${Table}方法详情",tags = {"${Table}Controller"})
+    @ApiOperation("${Table}分页查询",notes = "分页查询${Table}方法详情",tags = {"${Table}Controller"})
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "path", name = "page", value = "当前页", required = true, dataType = "Integer"),
             @ApiImplicitParam(paramType = "path", name = "size", value = "每页显示条数", required = true, dataType = "Integer")
     })
     </#if>
-    @GetMapping(value = "/search/{page}/{size}" )
+    @GetMapping("/search/{page}/{size}" )
     public Result<PageInfo> findPage(@PathVariable("page")  int page, @PathVariable("size")  int size){
         //调用${Table}Service实现分页查询${Table}
         PageInfo<${Table}> pageInfo = ${table}Service.findPage(page, size);
@@ -50,7 +50,7 @@ public class ${Table}Controller {
 
     // 多条件搜索数据
     <#if swagger==true>
-    @ApiOperation(value = "${Table}条件查询",notes = "条件查询${Table}方法详情",tags = {"${Table}Controller"})
+    @ApiOperation("${Table}条件查询",notes = "条件查询${Table}方法详情",tags = {"${Table}Controller"})
     </#if>
     @PostMapping(value = "/search" )
     public Result<List<${Table}>> findList(@RequestBody(required = false) <#if swagger==true>@ApiParam(name = "${Table}对象",value = "传入JSON数据",required = false)</#if> ${Table} ${table}){
@@ -61,11 +61,11 @@ public class ${Table}Controller {
 
     // 根据ID删除数据
     <#if swagger==true>
-    @ApiOperation(value = "${Table}根据ID删除",notes = "根据ID删除${Table}方法详情",tags = {"${Table}Controller"})
+    @ApiOperation("${Table}根据ID删除",notes = "根据ID删除${Table}方法详情",tags = {"${Table}Controller"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "${keyType}")
     </#if>
     @DeleteMapping(value = "/{id}" )
-    public Result delete(@PathVariable ${keyType} id){
+    public Result delete(@PathVariable("id") ${keyType} id){
         //调用${Table}Service实现根据主键删除
         ${table}Service.delete(id);
         return new Result(true,StatusCode.OK,"删除成功");
@@ -73,11 +73,11 @@ public class ${Table}Controller {
 
     // 修改${Table}数据
     <#if swagger==true>
-    @ApiOperation(value = "${Table}根据ID修改",notes = "根据ID修改${Table}方法详情",tags = {"${Table}Controller"})
+    @ApiOperation("${Table}根据ID修改",notes = "根据ID修改${Table}方法详情",tags = {"${Table}Controller"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "${keyType}")
     </#if>
-    @PutMapping(value="/{id}")
-    public Result update(@RequestBody <#if swagger==true>@ApiParam(name = "${Table}对象",value = "传入JSON数据",required = false)</#if> ${Table} ${table},@PathVariable ${keyType} id){
+    @PutMapping("/{id}")
+    public Result update(@RequestBody <#if swagger==true>@ApiParam(name = "${Table}对象",value = "传入JSON数据",required = false)</#if> ${Table} ${table},@PathVariable("id") ${keyType} id){
         //设置主键值
         ${table}.${keySetMethod}(id);
         //调用${Table}Service实现修改${Table}
@@ -98,11 +98,11 @@ public class ${Table}Controller {
 
     // 根据ID查询${Table}数据
     <#if swagger==true>
-    @ApiOperation(value = "${Table}根据ID查询",notes = "根据ID查询${Table}方法详情",tags = {"${Table}Controller"})
+    @ApiOperation("${Table}根据ID查询",notes = "根据ID查询${Table}方法详情",tags = {"${Table}Controller"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "${keyType}")
     </#if>
     @GetMapping("/{id}")
-    public Result<${Table}> findById(@PathVariable ${keyType} id){
+    public Result<${Table}> findById(@PathVariable("id") ${keyType} id){
         //调用${Table}Service实现根据主键查询${Table}
         ${Table} ${table} = ${table}Service.findById(id);
         return new Result<${Table}>(true,StatusCode.OK,"查询成功",${table});
@@ -110,7 +110,7 @@ public class ${Table}Controller {
 
     // 查询${Table}全部数据
     <#if swagger==true>
-    @ApiOperation(value = "查询所有${Table}",notes = "查询所${Table}有方法详情",tags = {"${Table}Controller"})
+    @ApiOperation("查询所有${Table}",notes = "查询所${Table}有方法详情",tags = {"${Table}Controller"})
     </#if>
     @GetMapping
     public Result<List<${Table}>> findAll(){

@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface ${Table}Feign {
 
     // ${Table}分页条件搜索实现
-    @PostMapping(value = "/search/{page}/{size}" )
+    @PostMapping("/search/{page}/{size}")
     Result<PageInfo> findPage(@RequestBody(required = false) ${Table} ${table}, @PathVariable("page")  int page, @PathVariable("size")  int size);
 
     // ${Table}分页搜索实现
-    @GetMapping(value = "/search/{page}/{size}" )
+    @GetMapping("/search/{page}/{size}")
     Result<PageInfo> findPage(@PathVariable("page")  int page, @PathVariable("size")  int size);
 
     // 多条件搜索品牌数据
-    @PostMapping(value = "/search" )
+    @PostMapping("/search")
     Result<List<${Table}>> findList(@RequestBody(required = false) ${Table} ${table});
 
     // 根据ID删除品牌数据
-    @DeleteMapping(value = "/{id}" )
+    @DeleteMapping("/{id}")
     Result delete(@PathVariable("id") ${keyType} id);
 
     // 修改${Table}数据
-    @PutMapping(value="/{id}")
+    @PutMapping("/{id}")
     Result update(@RequestBody ${Table} ${table},@PathVariable("id") ${keyType} id);
 
     // 新增${Table}数据
