@@ -296,11 +296,12 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void updateStatus(String username, String orderId, String transactionId, OrderLog orderLog) {
+        //todo 价格校验
         Order order = orderMapper.selectByPrimaryKey(orderId);
         if (order != null) {
             order.setTransactionId(transactionId);
             order.setPayStatus("1");//支付状态,0:未支付,1:已支付,2:支付失败
-            order.setPayTime(new Date());//支付时间
+            order.setPayTime(new Date());//todo 获取参数,不要自己new支付时间
             order.setUpdateTime(new Date());//更新时间
 
             //修改日志支付状态

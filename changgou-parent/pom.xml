@@ -17,7 +17,6 @@
         <module>changgou-common</module>
         <module>changgou-common-db</module>
         <module>changgou-user-auth</module>
-        <module>springboot_rabbitmq_delay</module>
     </modules>
 
     <parent>

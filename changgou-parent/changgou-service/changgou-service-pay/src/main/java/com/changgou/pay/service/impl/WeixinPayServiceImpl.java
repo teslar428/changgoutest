@@ -1,5 +1,6 @@
 package com.changgou.pay.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.changgou.entity.HttpClient;
 import com.changgou.pay.service.WeixinPayService;
 import com.github.wxpay.sdk.WXPayUtil;
@@ -25,11 +26,10 @@ public class WeixinPayServiceImpl implements WeixinPayService {
     private String notifyurl;
 
     @Override
-    public Map createNative(Map<String, String> parameter) {
+    public Map createNative(Map<String, String> parameters) {
         try {
-            String outtradeno = parameter.get("outtradeno");
-            String money = parameter.get("money");
-
+            String outtradeno = parameters.get("outtradeno");
+            String money = parameters.get("totalfee");
             Map param = new HashMap();
 
             //1.封装参数
@@ -42,6 +42,16 @@ public class WeixinPayServiceImpl implements WeixinPayService {
             param.put("spbill_create_ip", "127.0.0.1");//终端IP
             param.put("notify_url", notifyurl);//回调地址
             param.put("trade_type", "NATIVE");//交易类型
+
+//            String exchange = parameters.get("exchange");
+//            String routingkey = parameters.get("routingkey");
+//            String username = parameters.get("username");
+//            Map<String, String> attachMap = new HashMap<String, String>();
+//            attachMap.put("exchange", exchange);
+//            attachMap.put("routingkey", routingkey);
+//            attachMap.put("username", username);
+//            param.put("attach", JSON.toJSONString(attachMap));
+            param.put("attach", JSON.toJSONString(parameters));
 
             //2.将参数转成xml字符,并携带签名
             String paraXml = WXPayUtil.generateSignedXml(param, partnerkey);
@@ -57,13 +67,7 @@ public class WeixinPayServiceImpl implements WeixinPayService {
             Map<String, String> stringMap = WXPayUtil.xmlToMap(content);
             System.out.println("stringMap:" + stringMap);
 
-            //5.获取部分页面所需参数
-            Map<String, String> dataMap = new HashMap<String, String>();
-            dataMap.put("code_url", stringMap.get("code_url"));
-            dataMap.put("out_trade_no", outtradeno);
-            dataMap.put("total_fee", money);
-
-            return dataMap;
+            return stringMap;
         } catch (Exception e) {
             e.printStackTrace();
         }

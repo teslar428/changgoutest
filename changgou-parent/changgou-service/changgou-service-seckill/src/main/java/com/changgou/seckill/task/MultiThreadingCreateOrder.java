@@ -37,7 +37,6 @@ public class MultiThreadingCreateOrder {
 
     @Async
     public void createOrder() {
-
         SeckillStatus seckillStatus = (SeckillStatus) redisTemplate.boundListOps("SeckillOrderQueue").rightPop();
         try {
             if (seckillStatus != null) {
@@ -53,11 +52,6 @@ public class MultiThreadingCreateOrder {
 
                 SeckillGoods seckillGoods = (SeckillGoods) redisTemplate.boundHashOps("SeckillGoods_" + time).get(id);
 
-                //如果没有库存,则直接抛出异常
-//                if (seckillGoods == null || seckillGoods.getStockCount() <= 0) {
-//                    throw new RuntimeException("该商品已售罄");
-//                }
-
                 //如果有库存,则创建秒杀订单
                 SeckillOrder seckillOrder = new SeckillOrder();
                 seckillOrder.setId(idWorker.nextId());
@@ -70,8 +64,9 @@ public class MultiThreadingCreateOrder {
                 redisTemplate.boundHashOps("SeckillOrder").put(username, seckillOrder);
 
                 //库存减少
-                seckillGoods.setStockCount(seckillGoods.getStockCount() - 1);
-                if (seckillGoods.getStockCount() <= 0) {
+                Long seckillGoodsCount = redisTemplate.boundHashOps("SeckillGoodsCount").increment(seckillGoods.getId(), -1);
+                seckillGoods.setStockCount(seckillGoodsCount.intValue());
+                if (seckillGoods.getStockCount() <= 0) {//没有库存
                     seckillGoodsMapper.updateByPrimaryKeySelective(seckillGoods);
                     redisTemplate.boundHashOps("SeckillGoods_" + time).delete(id);
                 } else {

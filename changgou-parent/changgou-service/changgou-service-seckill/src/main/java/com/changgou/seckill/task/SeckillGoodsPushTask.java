@@ -1,4 +1,4 @@
-package com.changgou.seckill.timer;
+package com.changgou.seckill.task;
 
 import com.changgou.entity.DateUtil;
 import com.changgou.seckill.dao.SeckillGoodsMapper;

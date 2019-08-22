@@ -43,7 +43,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             token = first.getValue();
         }
 
-        //如果请求参数中也没有token,则输出错误代码/跳转到登录页面
+        //如果请求参数中也没有token,则跳转到登录页面
         if (StringUtils.isEmpty(token)) {
             return needAuthorization(USER_LOGIN_URL + "?FROM=" + request.getURI(), exchange);//FROM为原目标URI
         }

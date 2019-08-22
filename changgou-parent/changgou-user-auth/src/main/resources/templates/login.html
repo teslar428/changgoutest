@@ -203,7 +203,8 @@
                             location.href = app.from;
                         }, 3000);
                     } else {
-                        app.msg = res.data.message;
+                        app.msg='';
+                        this.$message.error(res.data.message);
                     }
                 }).catch();
             },

@@ -39,29 +39,35 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
+
     @PostMapping("/login")
     public Result login(String username, String password) {
-        if(StringUtils.isEmpty(username)){
-            throw new RuntimeException("账号不能为空");
+        try {
+            if (StringUtils.isEmpty(username)) {
+                throw new RuntimeException("账号不能为空");
+            }
+            if (StringUtils.isEmpty(password)) {
+                throw new RuntimeException("密码不能为空");
+            }
+
+            //申请令牌
+            AuthToken authToken = authService.login(username, password, clientId, clientSecret);
+
+            //用户身份令牌
+            String access_token = authToken.getAccessToken();
+            //将令牌存储到cookie
+            saveCookie(access_token);
+
+            return new Result(true, StatusCode.OK, "登录成功", authToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "登录失败");
         }
-        if(StringUtils.isEmpty(password)){
-            throw new RuntimeException("密码不能为空");
-        }
-
-        //申请令牌
-        AuthToken authToken =  authService.login(username,password,clientId,clientSecret);
-
-        //用户身份令牌
-        String access_token = authToken.getAccessToken();
-        //将令牌存储到cookie
-        saveCookie(access_token);
-
-        return new Result(true, StatusCode.OK,"登录成功！");
     }
 
     //将令牌存储到cookie
-    private void saveCookie(String token){
+    private void saveCookie(String token) {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-        CookieUtil.addCookie(response,cookieDomain,"/","Authorization",token,cookieMaxAge,false);
+        CookieUtil.addCookie(response, cookieDomain, "/", "Authorization", token, cookieMaxAge, false);
     }
 }

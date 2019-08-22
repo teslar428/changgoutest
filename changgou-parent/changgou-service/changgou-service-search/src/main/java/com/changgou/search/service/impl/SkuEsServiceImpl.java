@@ -20,7 +20,6 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -33,7 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class SkuEsServiceImpl implements SkuEsService {
@@ -116,6 +114,7 @@ public class SkuEsServiceImpl implements SkuEsService {
             //品牌
             if (!StringUtils.isEmpty(searchMap.get("brand"))) {
                 queryBuilder.must(QueryBuilders.termQuery("brandName", searchMap.get("brand")));
+//                queryBuilder.must(QueryBuilders.multiMatchQuery(searchMap.get("brand"), "brandName").type(MultiMatchQueryBuilder.Type.BEST_FIELDS).tieBreaker(0.1f));
             }
 
             //规格
@@ -343,7 +342,7 @@ public class SkuEsServiceImpl implements SkuEsService {
      * @param builder
      * @return
      */
-    public Map<String,Object> groupList(NativeSearchQueryBuilder builder){
+    public Map<String, Object> groupList(NativeSearchQueryBuilder builder) {
         /***
          * 品牌|分类|规格分组查询
          * AggregationBuilder：有一个构件工具对象AggregationBuilders
@@ -359,21 +358,21 @@ public class SkuEsServiceImpl implements SkuEsService {
         Aggregations aggregations = cagegoryPage.getAggregations();//获取聚合搜索的结果集
 
         //获取分类分组结果集
-        List<String> categoryList = getGroupList(aggregations,"skuCategory");
+        List<String> categoryList = getGroupList(aggregations, "skuCategory");
 
         //获取分类分组结果集
-        List<String> brandList = getGroupList(aggregations,"skuBrand");
+        List<String> brandList = getGroupList(aggregations, "skuBrand");
 
         //获取规格分组结果集
-        List<String> specList = getGroupList(aggregations,"skuSpec");
+        List<String> specList = getGroupList(aggregations, "skuSpec");
         //处理规格数据
         Map<String, Set<String>> resultSpecMap = specPutAll(specList);
 
         //Map存储所有结果集数据
-        Map<String,Object> resultMap = new HashMap<String,Object>();
-        resultMap.put("categoryList",categoryList);
-        resultMap.put("brandList",brandList);
-        resultMap.put("specList",resultSpecMap);
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("categoryList", categoryList);
+        resultMap.put("brandList", brandList);
+        resultMap.put("specList", resultSpecMap);
         return resultMap;
     }
 
@@ -383,7 +382,7 @@ public class SkuEsServiceImpl implements SkuEsService {
      * @param groupName
      * @return
      */
-    public List<String> getGroupList(Aggregations aggregations,String groupName){
+    public List<String> getGroupList(Aggregations aggregations, String groupName) {
         //获取指定分组的数据  根据别名获取,List<String>
         StringTerms stringTerms = aggregations.get(groupName);
         //循环所有分类分组数据，并且将它存入到List<String>集合中

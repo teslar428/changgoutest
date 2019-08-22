@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -176,11 +177,12 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
     }
 
     @Override
-    public void updatePayStatus(String out_trade_no, String transaction_id, String username) {
+    public void updatePayStatus(String username, String time_end, String transaction_id) throws Exception{
         SeckillOrder seckillOrder = (SeckillOrder) redisTemplate.boundHashOps("SeckillOrder").get(username);
         seckillOrder.setStatus("1");
+        seckillOrder.setTransactionId(transaction_id);
 
-        seckillOrder.setPayTime(new Date());
+        seckillOrder.setPayTime(new SimpleDateFormat("yyyyMMddHHmmss").parse(time_end));
         seckillOrderMapper.insertSelective(seckillOrder);
         redisTemplate.boundHashOps("SeckillOrder").delete(username);
 
@@ -202,8 +204,8 @@ public class SeckillOrderServiceImpl implements SeckillOrderService {
             }
             Long surplusCount = redisTemplate.boundHashOps("SeckillGoodsCount").increment(seckillStatus.getGoodsId(), 1);
             seckillGoods.setStockCount(surplusCount.intValue());
+            redisTemplate.boundHashOps("SeckillGoods_" + seckillStatus.getTime()).put(seckillStatus.getGoodsId(), seckillGoods);
             redisTemplate.boundListOps("SeckillGoodsCountList_" + seckillStatus.getGoodsId()).leftPush(seckillStatus.getGoodsId());
-            redisTemplate.boundHashOps("SeckillGoods_"+seckillStatus.getTime()).put(seckillStatus.getGoodsId(),seckillGoods);
             redisTemplate.boundHashOps("UserQueueCount").delete(seckillStatus.getUsername());
             redisTemplate.boundHashOps("UserQueueStatus").delete(seckillStatus.getUsername());
         }

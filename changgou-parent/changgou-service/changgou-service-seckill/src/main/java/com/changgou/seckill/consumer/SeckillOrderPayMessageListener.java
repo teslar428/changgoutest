@@ -19,21 +19,21 @@ public class SeckillOrderPayMessageListener {
     private SeckillOrderService seckillOrderService;
 
     @RabbitHandler
-    public void consumeMessage(@Payload String message) {
-        System.out.println(message);
+    public void consumeMessage(@Payload String message) throws Exception{
         Map<String, String> resuleMap = JSON.parseObject(message, Map.class);
-        System.out.println("监听到的消息:" + resuleMap);
 
         String returnCode = resuleMap.get("return_code");
         String resultCode = resuleMap.get("result_code");
         if (returnCode.equalsIgnoreCase("success")) {
-            String outTradeNo = resuleMap.get("out_trade_no");
             Map<String, String> attachMap = JSON.parseObject(resuleMap.get("attach"), Map.class);
+            String username = attachMap.get("username");
             if (resultCode.equalsIgnoreCase("success")) {
-                seckillOrderService.updatePayStatus(outTradeNo, resuleMap.get("transaction_id"), attachMap.get("username"));
+                String transaction_id = resuleMap.get("transaction_id");
+                String time_end = resuleMap.get("time_end");
+                seckillOrderService.updatePayStatus(username, time_end, transaction_id);
             } else {
                 //支付失败,删除订单
-                seckillOrderService.closeOrder(attachMap.get("username"));
+                seckillOrderService.closeOrder(username);
             }
         }
     }

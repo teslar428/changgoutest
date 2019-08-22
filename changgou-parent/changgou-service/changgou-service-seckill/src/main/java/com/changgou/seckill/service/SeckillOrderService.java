@@ -28,7 +28,7 @@ public interface SeckillOrderService {
 
     SeckillStatus queryStatus(String username);
 
-    void updatePayStatus(String out_trade_no, String transaction_id, String username);
+    void updatePayStatus(String username, String time_end, String transaction_id) throws Exception;
 
     void closeOrder(String username);
 }

@@ -36,8 +36,8 @@ public class WeixinPayController {
     private RabbitTemplate rabbitTemplate;
 
     @RequestMapping("/create/native")
-    public Result createNative(@RequestParam Map<String, String> parameter) {
-        Map<String, String> resultMap = weixinPayService.createNative(parameter);
+    public Result createNative(@RequestParam Map<String,String> parameters) {
+        Map<String, String> resultMap = weixinPayService.createNative(parameters);
         return new Result(true, StatusCode.OK, "创建二维码预付订单成功", resultMap);
     }
 
@@ -58,17 +58,18 @@ public class WeixinPayController {
             while ((len = inputStream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, len);
             }
+            outputStream.flush();
             outputStream.close();
             inputStream.close();
 
-            String result = new String(outputStream.toByteArray());
+            String result = new String(outputStream.toByteArray(),"utf-8");
 
             //将支付回调数据转换成xml字符串
             Map<String, String> map = WXPayUtil.xmlToMap(result);
 
             Map<String, String> attach = JSON.parseObject(map.get("attach"), Map.class);
             //发送消息
-            rabbitTemplate.convertAndSend(exchange, attach.get("queue"), JSON.toJSONString(map));
+            rabbitTemplate.convertAndSend(attach.get("exchange"), attach.get("routingkey"), JSON.toJSONString(map));
 
             Map resultMap = new HashMap();
             resultMap.put("return_code", "SUCCESS");
