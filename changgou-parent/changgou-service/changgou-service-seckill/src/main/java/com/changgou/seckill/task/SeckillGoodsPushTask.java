@@ -1,6 +1,7 @@
 package com.changgou.seckill.task;
 
 import com.changgou.entity.DateUtil;
+import com.changgou.entity.Message;
 import com.changgou.seckill.dao.SeckillGoodsMapper;
 import com.changgou.seckill.pojo.SeckillGoods;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class SeckillGoodsPushTask {
@@ -41,6 +40,7 @@ public class SeckillGoodsPushTask {
                 criteria.andNotIn("id", keys);
             }
             List<SeckillGoods> seckillGoods = seckillGoodsMapper.selectByExample(example);
+
             for (SeckillGoods seckillGood : seckillGoods) {
                 redisTemplate.boundHashOps("SeckillGoods_" + extName).put(seckillGood.getId(), seckillGood);
 

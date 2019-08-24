@@ -33,30 +33,6 @@ public class PageServiceImpl implements PageService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    private Map<String, Object> buildDataModel(Long spuId) {
-        Result<Spu> result = spuFeign.findById(spuId);
-        Spu spu = result.getData();
-
-        //获取分类信息
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("category1", categoryFeign.findById(spu.getCategory1Id()).getData());
-        dataMap.put("category2", categoryFeign.findById(spu.getCategory2Id()).getData());
-        dataMap.put("category3", categoryFeign.findById(spu.getCategory3Id()).getData());
-        if (spu.getImages() != null) {
-            dataMap.put("imageList", spu.getImages().split(","));
-        }
-        //所有可选规格
-        dataMap.put("specificationList", JSON.parseObject(spu.getSpecItems(), Map.class));
-        dataMap.put("spu", spu);
-
-        //根据spuId查询sku集合
-        Sku skuCondition = new Sku();
-        skuCondition.setSpuId(spuId);
-        Result<List<Sku>> resultSku = skuFeign.findList(skuCondition);
-        dataMap.put("skuList", resultSku.getData());
-        return dataMap;
-    }
-
     //生成静态页
     @Override
     public void createPageHtml(Long spuId) {
@@ -79,6 +55,30 @@ public class PageServiceImpl implements PageService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private Map<String, Object> buildDataModel(Long spuId) {
+        Result<Spu> result = spuFeign.findById(spuId);
+        Spu spu = result.getData();
+
+        //获取分类信息
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("category1", categoryFeign.findById(spu.getCategory1Id()).getData());
+        dataMap.put("category2", categoryFeign.findById(spu.getCategory2Id()).getData());
+        dataMap.put("category3", categoryFeign.findById(spu.getCategory3Id()).getData());
+        if (spu.getImages() != null) {
+            dataMap.put("imageList", spu.getImages().split(","));
+        }
+        //所有可选规格
+        dataMap.put("specificationList", JSON.parseObject(spu.getSpecItems(), Map.class));
+        dataMap.put("spu", spu);
+
+        //根据spuId查询sku集合
+        Sku skuCondition = new Sku();
+        skuCondition.setSpuId(spuId);
+        Result<List<Sku>> resultSku = skuFeign.findList(skuCondition);
+        dataMap.put("skuList", resultSku.getData());
+        return dataMap;
     }
 
     @Override

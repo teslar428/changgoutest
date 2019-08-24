@@ -1,5 +1,6 @@
 package com.changgou.order.service.impl;
 
+import com.alibaba.fescar.spring.annotation.GlobalTransactional;
 import com.changgou.entity.IdWorker;
 import com.changgou.goods.feign.SkuFeign;
 import com.changgou.order.dao.OrderItemMapper;
@@ -208,6 +209,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 增加Order
+    @GlobalTransactional(name = "add")
     @Override
     public int add(Order order) {
         //查询用户的所有购物车数据

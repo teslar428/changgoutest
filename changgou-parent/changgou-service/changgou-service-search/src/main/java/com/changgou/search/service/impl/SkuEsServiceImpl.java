@@ -114,7 +114,6 @@ public class SkuEsServiceImpl implements SkuEsService {
             //品牌
             if (!StringUtils.isEmpty(searchMap.get("brand"))) {
                 queryBuilder.must(QueryBuilders.termQuery("brandName", searchMap.get("brand")));
-//                queryBuilder.must(QueryBuilders.multiMatchQuery(searchMap.get("brand"), "brandName").type(MultiMatchQueryBuilder.Type.BEST_FIELDS).tieBreaker(0.1f));
             }
 
             //规格
@@ -169,7 +168,6 @@ public class SkuEsServiceImpl implements SkuEsService {
         try {
             return Integer.parseInt(searchMap.get("pageNum"));
         } catch (Exception e) {
-//            e.printStackTrace();
             System.out.println("未传入当前页,使用默认值......" + defaultPage);
         }
         return defaultPage;
@@ -183,7 +181,6 @@ public class SkuEsServiceImpl implements SkuEsService {
         try {
             return Integer.parseInt(searchMap.get("pageSize"));
         } catch (Exception e) {
-//            e.printStackTrace();
             System.out.println("未传入每页显示数量,使用默认值......" + defaultSize);
         }
         return defaultSize;
@@ -337,12 +334,8 @@ public class SkuEsServiceImpl implements SkuEsService {
         skuEsMapper.deleteAll();
     }
 
-    /****
-     * 分类条件搜索
-     * @param builder
-     * @return
-     */
-    public Map<String, Object> groupList(NativeSearchQueryBuilder builder) {
+    //分类条件搜索
+    private Map<String, Object> groupList(NativeSearchQueryBuilder builder) {
         /***
          * 品牌|分类|规格分组查询
          * AggregationBuilder：有一个构件工具对象AggregationBuilders
@@ -376,13 +369,8 @@ public class SkuEsServiceImpl implements SkuEsService {
         return resultMap;
     }
 
-    /***
-     * 获取分组结果查询
-     * @param aggregations
-     * @param groupName
-     * @return
-     */
-    public List<String> getGroupList(Aggregations aggregations, String groupName) {
+    //获取分组结果查询
+    private List<String> getGroupList(Aggregations aggregations, String groupName) {
         //获取指定分组的数据  根据别名获取,List<String>
         StringTerms stringTerms = aggregations.get(groupName);
         //循环所有分类分组数据，并且将它存入到List<String>集合中
